@@ -60,6 +60,151 @@ const commandData = [
 const categoryLabels = { basics: "Basics", branches: "Branches", remote: "Remote", inspect: "Inspect", undo: "Undo" };
 const categoryColors = { basics: "var(--primary)", branches: "var(--purple)", remote: "var(--cyan)", inspect: "var(--green)", undo: "var(--orange)" };
 
+const lessonData = {
+  "mental-model": {
+    number: "Chapter 01", duration: "8 min", title: "How Git actually thinks", lead: "Git is a snapshot database with a staging area—not a mysterious cloud and not just a folder backup. Once the four locations are clear, most commands become predictable.",
+    objectives: ["modified, staged, committed", "working tree vs. index", "HEAD and branch pointers", "local vs. remote"], model: true,
+    steps: [
+      { title: "Edit in the working tree", text: "Your normal project files live here. Saved edits are modified but not yet part of Git history.", command: "git status" },
+      { title: "Propose the next snapshot", text: "The index (staging area) holds the exact file versions you want in the next commit.", command: "git add <file>" },
+      { title: "Record an immutable snapshot", text: "A commit stores the staged snapshot, author, time, message, and parent commit.", command: "git commit -m \"message\"" },
+      { title: "Share selected history", text: "Push transfers commits and updates a branch on a remote; it does not upload random uncommitted edits.", command: "git push" }
+    ],
+    terminal: "$ git status\n> modified: app.js\n$ git add app.js\n$ git diff --staged\n> + console.log(\"ready\");\n$ git commit -m \"Add startup log\"\n> [main 4fd72ac] Add startup log",
+    note: "Git commits are snapshots. Diff is how Git shows the useful line-level difference between two snapshots or states.",
+    mission: "Open any practice folder, run git status, and identify which of Git's areas currently contains each change."
+  },
+  setup: {
+    number: "Chapter 02", duration: "10 min", title: "Set up Git and create the right kind of repository", lead: "There are two clean starting paths: initialize an existing local project, or clone an existing remote project. Knowing which path you are on prevents unrelated histories.",
+    objectives: ["verify installation", "configure commit identity", "init vs. clone", "make the first commit"],
+    steps: [
+      { title: "Verify Git", text: "Check that the command is installed before configuring anything.", command: "git --version" },
+      { title: "Set commit identity", text: "These values become author metadata. Your user.name is not required to match your GitHub username.", command: "git config --global user.name \"Asha Rao\"" },
+      { title: "Choose one starting path", text: "Use init for a local folder. Use clone when the repository already exists on GitHub.", command: "git init  # or git clone <url>" },
+      { title: "Inspect before committing", text: "Status tells you what Git sees; the first commit gives your branch a real snapshot.", command: "git status" }
+    ],
+    terminal: "$ git --version\n> git version 2.x.x\n$ git config --global user.name \"Asha Rao\"\n$ git config --global user.email \"asha@example.com\"\n$ git config --global init.defaultBranch main\n# Existing local project\n$ git init\n$ git add README.md\n$ git commit -m \"Initial commit\"",
+    note: "Commit identity and GitHub authentication are different. Configuring user.email does not sign you in to GitHub.",
+    mission: "Create a practice folder, initialize it, add a README, and confirm that git log shows your first commit."
+  },
+  daily: {
+    number: "Chapter 03", duration: "12 min", title: "Build a deliberate daily commit loop", lead: "Strong Git habits are a review loop: inspect, select, verify, then commit. Small focused commits are easier to review, merge, revert, and understand later.",
+    objectives: ["read short status", "review unstaged edits", "stage selectively", "verify the staged snapshot"],
+    steps: [
+      { title: "Inspect the state", text: "Use short status for a quick map: the left column is staged and the right column is working-tree state.", command: "git status --short" },
+      { title: "Review before staging", text: "See exact unstaged lines, then use patch mode when one file contains unrelated edits.", command: "git diff && git add -p" },
+      { title: "Verify the proposal", text: "The staged diff is the best preview of exactly what the next commit will contain.", command: "git diff --staged" },
+      { title: "Commit one idea", text: "Describe why the change exists, then check the graph to confirm where it landed.", command: "git commit -m \"Add form validation\"" }
+    ],
+    terminal: "$ git status --short\n>  M src/form.js\n> ?? form.test.js\n$ git diff\n$ git add -p src/form.js\n$ git add form.test.js\n$ git diff --staged\n$ git commit -m \"Validate signup form\"\n> [feature/signup 12ab91f] Validate signup form\n$ git log --oneline --graph -5",
+    note: "git add . is convenient, but it can stage generated files, secrets, and unrelated edits. Always review status and the staged diff.",
+    mission: "Make two unrelated edits, then use git add -p so only one idea enters your next commit."
+  },
+  ignore: {
+    number: "Chapter 04", duration: "9 min", title: "Ignore generated files and protect secrets", lead: ".gitignore keeps untracked noise out of commits. It is a selection rule, not a security system and not a way to erase files that Git already tracks.",
+    objectives: ["write ignore patterns", "test matching rules", "untrack safely", "respond to leaked secrets"],
+    steps: [
+      { title: "Create project rules", text: "Ignore dependencies, build output, local environment files, logs, and editor state.", command: "node_modules/  .env  dist/  *.log" },
+      { title: "Understand patterns", text: "A trailing slash targets directories, * matches within one path level, ** crosses directories, and ! re-includes.", command: "*.log  !important.log" },
+      { title: "Diagnose an ignored file", text: "Ask Git which file and line supplied the matching ignore rule.", command: "git check-ignore -v .env" },
+      { title: "Stop tracking, keep locally", text: "Adding a tracked file to .gitignore is not enough; remove only its index entry, then commit.", command: "git rm --cached .env" }
+    ],
+    terminal: "# .gitignore\n> node_modules/\n> .env\n> .env.*\n> !.env.example\n> dist/\n> coverage/\n> *.log\n$ git check-ignore -v .env\n> .gitignore:2:.env .env\n$ git rm --cached .env",
+    note: "If a real password, token, or private key was committed, rotate or revoke it immediately. Removing the file in a later commit does not remove it from earlier history.",
+    mission: "Add a .gitignore, include .env.example, and use git check-ignore -v to prove that .env is ignored."
+  },
+  branches: {
+    number: "Chapter 05", duration: "14 min", title: "Use branches as movable pointers", lead: "A branch is just a name pointing at a commit. HEAD tells Git which branch you are on; committing moves that branch pointer forward.",
+    objectives: ["create and switch", "read a commit graph", "fast-forward vs. merge", "resolve conflicts"],
+    steps: [
+      { title: "Start from updated main", text: "Branch from the commit that should be the base of your work.", command: "git switch main" },
+      { title: "Create focused work", text: "The new branch initially points to the same commit; HEAD moves to the new branch.", command: "git switch -c feature/profile" },
+      { title: "Integrate intentionally", text: "Switch to the receiving branch, inspect the graph, then merge the finished feature.", command: "git switch main && git merge feature/profile" },
+      { title: "Resolve human decisions", text: "For conflicts, edit markers, test the result, stage resolved files, and finish the operation.", command: "git add <resolved-file> && git commit" }
+    ],
+    terminal: "$ git switch -c feature/profile\n> Switched to a new branch 'feature/profile'\n$ git add .\n$ git commit -m \"Add profile card\"\n$ git switch main\n$ git merge feature/profile\n> Fast-forward\n$ git branch -d feature/profile",
+    note: "Rebase rewrites commit IDs. It is excellent for cleaning your own unpublished branch, but avoid rebasing shared commits other people already use.",
+    mission: "Create a feature branch, make one commit, merge it into main, and draw where HEAD and both branch names point."
+  },
+  remotes: {
+    number: "Chapter 06", duration: "13 min", title: "Know what fetch, pull, and push really move", lead: "Remote-tracking names such as origin/main are your last fetched knowledge of another repository. Fetch updates that knowledge; it does not edit your working files.",
+    objectives: ["origin and upstream", "remote-tracking branches", "fetch vs. pull", "safe publish flow"],
+    steps: [
+      { title: "Inspect connections", text: "A remote is a named set of URLs. origin is conventional, not magical.", command: "git remote -v" },
+      { title: "Update your remote view", text: "Fetch downloads commits and moves origin/* references without merging your current branch.", command: "git fetch origin --prune" },
+      { title: "Compare before integrating", text: "Review incoming commits and code before choosing merge, rebase, or a fast-forward-only pull.", command: "git diff HEAD origin/main" },
+      { title: "Publish and track", text: "The -u option connects your local branch to its remote counterpart; later plain push/pull can use it.", command: "git push -u origin feature/profile" }
+    ],
+    terminal: "$ git fetch origin --prune\n$ git branch -vv\n> * main a81bd20 [origin/main: behind 2]\n$ git log HEAD..origin/main --oneline\n$ git diff --stat HEAD origin/main\n$ git pull --ff-only\n> Updating a81bd20..7c03e99\n> Fast-forward",
+    note: "git pull is fetch plus integration. Use git fetch when you want to inspect first, and --ff-only when you want Git to refuse an unexpected merge commit.",
+    mission: "Fetch a repository, compare HEAD with its upstream, and explain what will change before running pull."
+  },
+  auth: {
+    number: "Chapter 07", duration: "11 min", title: "Authenticate to GitHub without exposing credentials", lead: "GitHub must verify who may read or write a repository. HTTPS credential helpers, SSH keys, and GitHub CLI are safe routes; your account password is not used for Git over HTTPS.",
+    objectives: ["identity vs. authentication", "HTTPS credential flow", "SSH public keys", "verify the active account"],
+    steps: [
+      { title: "Choose an HTTPS flow", text: "Git Credential Manager or GitHub CLI can open a browser sign-in and store credentials securely.", command: "gh auth login" },
+      { title: "Or create an SSH key pair", text: "Keep the private key on your computer and add only the .pub content to GitHub.", command: "ssh-keygen -t ed25519 -C \"you@example.com\"" },
+      { title: "Test the account", text: "The SSH test identifies the GitHub account accepted by your current key configuration.", command: "ssh -T git@github.com" },
+      { title: "Check the repository URL", text: "HTTPS and SSH URLs use different authentication paths; confirm which one origin uses.", command: "git remote -v" }
+    ],
+    terminal: "$ gh auth login\n> Where do you use GitHub? GitHub.com\n> Preferred protocol: HTTPS\n$ gh auth status\n> Logged in to github.com\n# SSH alternative\n$ ssh -T git@github.com\n> Hi username! You've successfully authenticated.",
+    note: "Never commit a token, account password, .env file, or private SSH key. If one leaks, revoke it first—then clean history if necessary.",
+    mission: "Run gh auth status or ssh -T git@github.com and confirm which account is being used before your next push."
+  },
+  collaboration: {
+    number: "Chapter 08", duration: "15 min", title: "Turn branches into a team conversation", lead: "GitHub adds planning, review, automation, and access rules around Git history. A pull request is a proposal and discussion—not the same operation as git pull.",
+    objectives: ["issues and closing keywords", "pull request lifecycle", "reviews and checks", "fork and upstream workflow"],
+    steps: [
+      { title: "Make the repository welcoming", text: "README explains the project; CONTRIBUTING sets expectations; LICENSE defines use; CODEOWNERS requests reviewers.", command: "README.md  CONTRIBUTING.md  LICENSE" },
+      { title: "Connect work to an issue", text: "Use labels, assignees, milestones, and a focused issue. 'Closes #42' in the PR links and closes it when merged.", command: "gh issue create" },
+      { title: "Open a reviewable PR", text: "Push a focused branch, explain why it exists, add screenshots/tests, and request review.", command: "gh pr create --fill" },
+      { title: "Pass checks and merge", text: "Resolve conversations and required checks; choose merge, squash, or rebase based on team history policy.", command: "gh pr checks && gh pr merge" }
+    ],
+    terminal: "$ git switch -c feature/quiz\n$ git push -u origin feature/quiz\n$ gh pr create --fill\n> Creating pull request for feature/quiz into main\n$ gh pr checks\n> test  pass\n> lint  pass\n$ gh pr view --web\n# After merge\n$ git switch main\n$ git pull --ff-only",
+    note: "In a fork workflow, origin normally means your fork and upstream means the original project. Fetch upstream before updating your fork's main branch.",
+    mission: "Draft a pull request description with purpose, testing steps, screenshots if relevant, and a closing keyword for its issue."
+  }
+};
+
+const diffRecipeData = [
+  { category: "worktree", tag: "unstaged", title: "See edits before git add", description: "Compare the working tree with the staging area. Staged changes are not shown here.", command: "git diff" },
+  { category: "worktree", tag: "staged", title: "Preview the next commit", description: "Compare staged content with HEAD. --cached is a synonym for --staged.", command: "git diff --staged" },
+  { category: "worktree", tag: "all current", title: "See staged and unstaged changes", description: "Compare the complete working tree with the last commit in one view.", command: "git diff HEAD" },
+  { category: "worktree", tag: "one file", title: "Inspect one specific path", description: "The double dash clearly separates revisions and options from a file path.", command: "git diff -- src/app.js\ngit diff --staged -- src/app.js" },
+  { category: "worktree", tag: "files", title: "List only changed file names", description: "Get a quick inventory without displaying the complete patch.", command: "git diff --name-only\ngit diff --staged --name-only" },
+  { category: "worktree", tag: "summary", title: "Show a change-size summary", description: "Display each changed file plus approximate insertion and deletion counts.", command: "git diff --stat" },
+  { category: "history", tag: "last commit", title: "Inspect the latest commit's change", description: "Compare the parent of HEAD with HEAD to see what the latest commit introduced.", command: "git diff HEAD~1 HEAD" },
+  { category: "history", tag: "commits", title: "Compare any two commits", description: "Diff direction matters: the second revision is treated as the new side.", command: "git diff a1b2c3d d4e5f6a" },
+  { category: "history", tag: "single commit", title: "Show one commit as a patch", description: "A caret selects the first parent, so this shows the selected commit's change.", command: "git diff <commit>^ <commit>" },
+  { category: "branches", tag: "branch tips", title: "Compare two local branch tips", description: "See the endpoint difference between main and your local feature branch.", command: "git diff main feature/profile" },
+  { category: "branches", tag: "PR view", title: "See changes introduced on a branch", description: "Three dots compare the merge base with the feature tip—similar to a pull request's change set.", command: "git diff main...feature/profile" },
+  { category: "branches", tag: "direction", title: "Reverse the comparison direction", description: "Swapping revisions reverses which lines appear added and removed.", command: "git diff feature/profile main" },
+  { category: "remote", tag: "incoming", title: "Review GitHub changes before pull", description: "Fetch safely, then compare your current commit with the updated remote-tracking branch.", command: "git fetch origin\ngit diff HEAD origin/main" },
+  { category: "remote", tag: "upstream", title: "Compare with the tracked branch", description: "@{u} resolves to the upstream shown by git branch -vv, such as origin/main.", command: "git fetch origin\ngit diff HEAD @{u}" },
+  { category: "remote", tag: "unpushed", title: "See local work not pushed yet", description: "Reverse the endpoints to view commits and code present locally but missing upstream.", command: "git diff @{u} HEAD" },
+  { category: "remote", tag: "remote branches", title: "Compare two GitHub branches", description: "Fetch first so both origin/* names represent the latest server state you know about.", command: "git fetch origin\ngit diff origin/main origin/develop" },
+  { category: "review", tag: "words", title: "Highlight word-level changes", description: "Useful for prose, documentation, and lines where a small token changed.", command: "git diff --word-diff" },
+  { category: "review", tag: "quality", title: "Check whitespace errors", description: "Warn about conflict markers and whitespace mistakes introduced by your patch.", command: "git diff --check" },
+  { category: "review", tag: "conflict", title: "List unresolved conflict files", description: "Filter the name list to paths Git still marks unmerged during a conflict.", command: "git diff --name-only --diff-filter=U" },
+  { category: "review", tag: "no repo", title: "Compare two files outside Git", description: "--no-index makes Git's diff engine compare ordinary filesystem paths.", command: "git diff --no-index old.js new.js" }
+];
+
+const diffSamples = {
+  javascript: {
+    before: `function greet(name) {\n  return "Hello " + name;\n}\n\nconst user = "Maya";\nconsole.log(greet(user));`,
+    after: `function greet(name, excited = false) {\n  const message = \`Hello, \${name}\`;\n  return excited ? message.toUpperCase() + "!" : message;\n}\n\nconst user = "Maya";\nconsole.log(greet(user, true));`
+  },
+  html: {
+    before: `<header>\n  <h1>My Portfolio</h1>\n  <a href="/work">Work</a>\n</header>`,
+    after: `<header class="site-header">\n  <a class="logo" href="/">Maya.dev</a>\n  <nav aria-label="Main navigation">\n    <a href="/work">Work</a>\n    <a href="/about">About</a>\n  </nav>\n</header>`
+  },
+  readme: {
+    before: `# Weather App\n\nA small JavaScript weather project.\n\n## Run\nOpen index.html.`,
+    after: `# Weather App\n\nA responsive weather dashboard built with JavaScript.\n\n## Features\n- City search\n- Five-day forecast\n- Saved locations\n\n## Run locally\nOpen index.html in a modern browser.`
+  }
+};
+
 const fixData = [
   { id: "not-repository", icon: ".G", color: "var(--primary)", title: "Not a Git repository", subtitle: "Find or initialize the project", severity: "safe", error: "fatal: not a git repository (or any of the parent directories): .git", summary: "You are outside a repository, or this folder has not intentionally been initialized yet.", code: "# If the repository already exists, enter its folder\ncd path/to/project\ngit status\n\n# If this is a brand-new project instead\ngit init", why: "Git searches the current folder and its parents for a .git database. Changing folders or deliberately initializing provides one.", warning: "Do not run git init randomly inside a repository's subfolder; first confirm where your project root should be.", keywords: "fatal not a git repository dot git init folder directory" },
   { id: "identity-unknown", icon: "ID", color: "var(--cyan)", title: "Author identity unknown", subtitle: "Configure your commit author", severity: "safe", error: "Author identity unknown\nfatal: unable to auto-detect email address", summary: "Tell Git the human name and email it should record on new commits.", code: "git config --global user.name \"Your Name\"\ngit config --global user.email \"you@example.com\"\n\n# Verify where the values came from\ngit config --list --show-origin", why: "Every commit stores author metadata. These settings supply it; the name does not have to equal your GitHub username.", keywords: "author identity unknown email config unable auto detect" },
@@ -68,7 +213,7 @@ const fixData = [
   { id: "ssh-denied", icon: "SSH", color: "var(--red)", title: "Permission denied (publickey)", subtitle: "Fix GitHub SSH authentication", severity: "careful", error: "git@github.com: Permission denied (publickey).\nfatal: Could not read from remote repository.", summary: "Confirm the remote uses SSH, test which GitHub account your key authenticates, and add the correct key if needed.", code: "git remote -v\nssh -T git@github.com\n\n# GitHub CLI can guide authentication\ngh auth login", why: "The repository URL asks for SSH authentication, but GitHub did not accept a key from your SSH agent.", warning: "Never paste a private SSH key, password, or access token into a remote URL or commit.", keywords: "permission denied publickey ssh github authentication could not read remote" },
   { id: "repo-not-found", icon: "404", color: "var(--red)", title: "Repository not found", subtitle: "Check URL and account access", severity: "safe", error: "remote: Repository not found.\nfatal: repository '<url>' not found", summary: "The URL may be misspelled, renamed, private, or unavailable to your authenticated account.", code: "git remote -v\n# Correct a wrong URL if needed\ngit remote set-url origin <correct-repository-url>\n\n# Check GitHub CLI authentication\ngh auth status", why: "GitHub returns the same message for some missing repositories and repositories your current account cannot access.", keywords: "repository not found 404 remote private access auth url" },
   { id: "unfinished-operation", icon: "…", color: "var(--orange)", title: "A merge or rebase is still in progress", subtitle: "Continue it or abort it cleanly", severity: "careful", error: "fatal: It seems that there is already a rebase-merge directory", summary: "Git is waiting for you to finish or cancel an earlier history operation before starting another.", code: "git status\n\n# After resolving and staging conflicts\ngit rebase --continue\n# Or return to the state before it began\ngit rebase --abort\n\n# For an unfinished merge instead\ngit merge --abort", why: "Git stores operation state inside .git so it can safely continue or roll back the multi-step action.", warning: "Use git status to identify the active operation. Do not manually delete Git's state files while an operation is recoverable.", keywords: "already rebase merge in progress continue abort unfinished directory" },
-  { id: "wrong-branch", icon: "BR", color: "var(--primary)", title: "I committed on the wrong branch", subtitle: "Move a local commit safely", severity: "careful", error: "The commit belongs on feature/login, not main.", summary: "Create the intended branch at your current commit, then move the original branch back one commit.", code: "# While still on the wrong branch\ngit branch feature/login\n\n# Move main back but keep files unchanged\ngit reset --hard HEAD~1\n\n# Continue on the correct branch\ngit switch feature/login", why: "The new branch keeps a pointer to the commit before main moves back.", warning: "Only reset if the mistaken commit is local and not pushed. If pushed, use git revert instead.", keywords: "wrong branch commit main reset" },
+  { id: "wrong-branch", icon: "BR", color: "var(--primary)", title: "I committed on the wrong branch", subtitle: "Move a local commit safely", severity: "careful", error: "The commit belongs on feature/login, not main.", summary: "First confirm the worktree is clean, preserve the commit on its intended branch, then move the original local branch back.", code: "git status\n# Continue only when the working tree is clean\ngit switch -c feature/login\ngit switch main\n\n# Move local main back; --keep aborts on unsafe overlap\ngit reset --keep HEAD~1\ngit switch feature/login", why: "The new feature branch preserves a pointer to the commit before main moves. --keep is more protective of uncommitted changes than --hard.", warning: "Do this only when the mistaken commit is local and not pushed. If it was shared, keep history intact and use git revert instead.", keywords: "wrong branch commit main reset keep" },
   { id: "undo-pushed", icon: "RV", color: "var(--green)", title: "I need to undo a pushed commit", subtitle: "Reverse shared history", severity: "safe", error: "A bad commit is already on the shared remote branch.", summary: "Add a new inverse commit. This preserves the history teammates may already have.", code: "git log --oneline\ngit revert <bad-commit-id>\ngit push", why: "Revert does not rewrite shared history; it records the correction transparently.", keywords: "undo pushed commit shared revert remote" },
   { id: "push-rejected", icon: "↑!", color: "var(--orange)", title: "Push rejected: non-fast-forward", subtitle: "Remote has newer commits", severity: "safe", error: "! [rejected] main -> main (non-fast-forward)", summary: "Bring the remote commits into your local branch first, then push again.", code: "git pull --rebase origin main\n# Resolve conflicts if Git pauses\ngit push origin main", why: "Rebase places your local work after the newer remote commits, producing a fast-forward push.", keywords: "push rejected non fast forward fetch first remote newer" },
   { id: "merge-conflict", icon: "<>", color: "var(--red)", title: "I have a merge conflict", subtitle: "Resolve both versions", severity: "careful", error: "CONFLICT (content): Merge conflict in src/app.js\nAutomatic merge failed; fix conflicts and then commit.", summary: "Open each conflicted file, choose the correct content, delete conflict markers, then stage the resolution.", code: "git status\n# Edit files containing <<<<<<<, =======, >>>>>>>\ngit add src/app.js\ngit commit        # finish a merge\n# or: git rebase --continue", why: "Staging a resolved file tells Git that you reviewed and settled that conflict.", warning: "Run tests before completing the merge. Use git merge --abort to return to the pre-merge state.", keywords: "conflict merge markers both modified rebase continue" },
@@ -173,6 +318,15 @@ $$('.nav__links a').forEach(link => link.addEventListener("click", () => {
 
 window.addEventListener("scroll", () => $(".site-header").classList.toggle("is-scrolled", window.scrollY > 16), { passive: true });
 
+// Re-align deep links after JavaScript-rendered course panels establish their height.
+window.addEventListener("load", () => {
+  if (!window.location.hash) return;
+  setTimeout(() => {
+    const target = document.getElementById(window.location.hash.slice(1));
+    if (target) target.scrollIntoView({ behavior: "auto", block: "start" });
+  }, 180);
+});
+
 const sectionObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -254,6 +408,71 @@ $$('.stage-check').forEach(button => button.addEventListener("click", event => {
 }));
 updateProgress();
 
+// Guided academy chapters
+let activeLessonId = "mental-model";
+let completedLessons = JSON.parse(localStorage.getItem("gitquest-lessons") || "[]");
+
+function formatLessonTerminal(source) {
+  return source.split("\n").map(line => {
+    const safe = escapeHTML(line.slice(2));
+    if (line.startsWith("$ ")) return `<span class="lesson-command">$ ${safe}</span>`;
+    if (line.startsWith("# ")) return `<span class="lesson-comment"># ${safe}</span>`;
+    if (line.startsWith("> ")) return `<span class="lesson-output">${safe}</span>`;
+    return escapeHTML(line);
+  }).join("\n");
+}
+
+function lessonCommands(source) {
+  return source.split("\n").filter(line => line.startsWith("$ ")).map(line => line.slice(2)).join("\n");
+}
+
+function syncLessonTabs() {
+  $$('.lesson-tab').forEach(tab => {
+    const complete = completedLessons.includes(tab.dataset.lesson);
+    tab.classList.toggle("is-complete", complete);
+    tab.title = complete ? "Chapter completed" : "Open chapter";
+  });
+}
+
+function renderLesson(id) {
+  const lesson = lessonData[id];
+  if (!lesson) return;
+  activeLessonId = id;
+  const complete = completedLessons.includes(id);
+  $$('.lesson-tab').forEach(tab => {
+    const active = tab.dataset.lesson === id;
+    tab.classList.toggle("is-active", active);
+    tab.setAttribute("aria-selected", String(active));
+  });
+  const model = lesson.model ? `<div class="model-flow" aria-label="Git data flow">
+    <div class="model-zone"><span>01</span><strong>Working tree</strong><small>edit files</small></div>
+    <div class="model-zone"><span>02</span><strong>Staging area</strong><small>git add</small></div>
+    <div class="model-zone"><span>03</span><strong>Local history</strong><small>git commit</small></div>
+    <div class="model-zone"><span>04</span><strong>Remote repo</strong><small>git push</small></div>
+  </div>` : "";
+  $("#lessonPanel").innerHTML = `<div class="lesson-panel__top"><div><span class="lesson-label"><i></i>${lesson.number}</span><h3>${lesson.title}</h3></div><span class="lesson-duration">${lesson.duration}</span></div>
+    <p class="lesson-lead">${lesson.lead}</p>
+    ${model}
+    <div class="lesson-objectives">${lesson.objectives.map(item => `<span>${item}</span>`).join("")}</div>
+    <div class="lesson-content-grid">
+      <div><h4 class="lesson-block-title">Guided concepts</h4><div class="lesson-steps">${lesson.steps.map((step, index) => `<div class="lesson-step"><span class="lesson-step__number">${String(index + 1).padStart(2, "0")}</span><div><strong>${step.title}</strong><p>${step.text}</p><code>${escapeHTML(step.command)}</code></div></div>`).join("")}</div></div>
+      <div><h4 class="lesson-block-title">Example session</h4><div class="lesson-terminal"><div class="lesson-terminal__bar"><span>~/gitquest</span><button class="copy-button" type="button" id="copyLessonCommands" aria-label="Copy lesson commands">${icons.copy}</button></div><pre>${formatLessonTerminal(lesson.terminal)}</pre></div><div class="lesson-note">${icons.warning}<span><strong>Remember:</strong> ${lesson.note}</span></div></div>
+    </div>
+    <div class="lesson-mission"><div><span>Practice mission</span><p>${lesson.mission}</p></div><button type="button" id="completeLesson">${complete ? "Completed ✓" : "Mark understood"}</button></div>`;
+  $("#copyLessonCommands").addEventListener("click", () => copyText(lessonCommands(lesson.terminal), "Lesson commands copied"));
+  $("#completeLesson").addEventListener("click", () => {
+    completedLessons = complete ? completedLessons.filter(item => item !== id) : [...completedLessons, id];
+    localStorage.setItem("gitquest-lessons", JSON.stringify(completedLessons));
+    syncLessonTabs();
+    renderLesson(id);
+    showToast(complete ? "Chapter marked incomplete" : "Chapter completed");
+  });
+}
+
+$$('.lesson-tab').forEach(tab => tab.addEventListener("click", () => renderLesson(tab.dataset.lesson)));
+syncLessonTabs();
+renderLesson(activeLessonId);
+
 // Command center
 let activeCommandFilter = "all";
 let commandLimit = 12;
@@ -291,10 +510,10 @@ function renderCommands() {
   $$('.copy-button[data-copy]', $("#commandGrid")).forEach(button => button.addEventListener("click", () => copyText(decodeURIComponent(button.dataset.copy), "Command copied")));
 }
 
-$$('.filter-chip').forEach(button => button.addEventListener("click", () => {
+$$('#commandFilters .filter-chip').forEach(button => button.addEventListener("click", () => {
   activeCommandFilter = button.dataset.filter;
   commandLimit = 12;
-  $$('.filter-chip').forEach(chip => {
+  $$('#commandFilters .filter-chip').forEach(chip => {
     const active = chip === button;
     chip.classList.toggle("is-active", active);
     chip.setAttribute("aria-pressed", String(active));
@@ -323,6 +542,211 @@ $("#copyCheatSheet").addEventListener("click", () => {
 
 $("#heroCommandCount").textContent = `${commandData.length}`;
 renderCommands();
+
+// Interactive Git diff studio and recipe guide
+const diffScenarioCommands = {
+  working: "git diff",
+  staged: "git diff --staged",
+  head: "git diff HEAD",
+  branches: "git diff main...feature/name",
+  remote: "git fetch origin\ngit diff HEAD origin/main",
+  unpushed: "git diff @{u} HEAD"
+};
+const diffRecipeColors = { worktree: "var(--primary)", history: "var(--purple)", branches: "var(--cyan)", remote: "var(--green)", review: "var(--orange)" };
+let diffView = "unified";
+let currentDiffOperations = [];
+let currentPatch = "";
+let diffRecipeFilter = "all";
+let diffRecipeLimit = 9;
+
+function textLines(text) {
+  return text === "" ? [] : text.replace(/\r\n/g, "\n").split("\n");
+}
+
+function lineKey(line, ignoreWhitespace) {
+  return ignoreWhitespace ? line.replace(/\s+/g, " ").trim() : line;
+}
+
+function calculateLineDiff(beforeText, afterText, ignoreWhitespace = false) {
+  const before = textLines(beforeText);
+  const after = textLines(afterText);
+  if (before.length > 400 || after.length > 400) return { error: "For a smooth browser preview, compare at most 400 lines on each side." };
+  const rows = Array.from({ length: before.length + 1 }, () => new Uint16Array(after.length + 1));
+  for (let oldIndex = before.length - 1; oldIndex >= 0; oldIndex -= 1) {
+    for (let newIndex = after.length - 1; newIndex >= 0; newIndex -= 1) {
+      rows[oldIndex][newIndex] = lineKey(before[oldIndex], ignoreWhitespace) === lineKey(after[newIndex], ignoreWhitespace)
+        ? rows[oldIndex + 1][newIndex + 1] + 1
+        : Math.max(rows[oldIndex + 1][newIndex], rows[oldIndex][newIndex + 1]);
+    }
+  }
+  const operations = [];
+  let oldIndex = 0;
+  let newIndex = 0;
+  let oldNumber = 1;
+  let newNumber = 1;
+  while (oldIndex < before.length && newIndex < after.length) {
+    if (lineKey(before[oldIndex], ignoreWhitespace) === lineKey(after[newIndex], ignoreWhitespace)) {
+      operations.push({ type: "equal", text: after[newIndex], oldNo: oldNumber++, newNo: newNumber++ });
+      oldIndex += 1;
+      newIndex += 1;
+    } else if (rows[oldIndex + 1][newIndex] >= rows[oldIndex][newIndex + 1]) {
+      operations.push({ type: "delete", text: before[oldIndex], oldNo: oldNumber++, newNo: null });
+      oldIndex += 1;
+    } else {
+      operations.push({ type: "add", text: after[newIndex], oldNo: null, newNo: newNumber++ });
+      newIndex += 1;
+    }
+  }
+  while (oldIndex < before.length) operations.push({ type: "delete", text: before[oldIndex++], oldNo: oldNumber++, newNo: null });
+  while (newIndex < after.length) operations.push({ type: "add", text: after[newIndex++], oldNo: null, newNo: newNumber++ });
+  return { operations, oldCount: before.length, newCount: after.length };
+}
+
+function buildLearningPatch(operations, oldCount, newCount) {
+  const changed = operations.some(item => item.type !== "equal");
+  if (!changed) return "";
+  const lines = ["diff --git a/app.js b/app.js", "--- a/app.js", "+++ b/app.js", `@@ -1,${oldCount} +1,${newCount} @@`];
+  operations.forEach(item => lines.push(`${item.type === "add" ? "+" : item.type === "delete" ? "-" : " "}${item.text}`));
+  return lines.join("\n");
+}
+
+function diffLineHTML(item) {
+  const sign = item.type === "add" ? "+" : item.type === "delete" ? "−" : " ";
+  return `<div class="diff-line diff-line--${item.type}"><span class="diff-line__no">${item.oldNo ?? ""}</span><span class="diff-line__no">${item.newNo ?? ""}</span><span class="diff-line__sign">${sign}</span><code>${escapeHTML(item.text) || "&nbsp;"}</code></div>`;
+}
+
+function splitDiffRows(operations) {
+  const result = [];
+  let index = 0;
+  while (index < operations.length) {
+    if (operations[index].type === "equal") {
+      result.push({ left: operations[index], right: operations[index] });
+      index += 1;
+      continue;
+    }
+    const removed = [];
+    const added = [];
+    while (index < operations.length && operations[index].type !== "equal") {
+      (operations[index].type === "delete" ? removed : added).push(operations[index]);
+      index += 1;
+    }
+    const length = Math.max(removed.length, added.length);
+    for (let row = 0; row < length; row += 1) result.push({ left: removed[row] || null, right: added[row] || null });
+  }
+  return result;
+}
+
+function splitSideHTML(item, side) {
+  if (!item) return '<div class="diff-split-side is-empty"><span></span><code>&nbsp;</code></div>';
+  const changedClass = item.type === "delete" ? "is-delete" : item.type === "add" ? "is-add" : "";
+  const number = side === "left" ? item.oldNo : item.newNo;
+  return `<div class="diff-split-side ${changedClass}"><span>${number ?? ""}</span><code>${escapeHTML(item.text) || "&nbsp;"}</code></div>`;
+}
+
+function renderDiff() {
+  const result = calculateLineDiff($("#diffBefore").value, $("#diffAfter").value, $("#diffWhitespace").checked);
+  const output = $("#diffOutput");
+  if (result.error) {
+    currentDiffOperations = [];
+    currentPatch = "";
+    $("#diffAdded").textContent = "0";
+    $("#diffDeleted").textContent = "0";
+    $("#diffUnchanged").textContent = "0";
+    $("#diffSummary").textContent = "Preview limit reached";
+    output.className = "diff-output";
+    output.innerHTML = `<div class="diff-empty"><div>${icons.warning}<strong>Comparison is too large</strong><span>${result.error}</span></div></div>`;
+    return;
+  }
+  currentDiffOperations = result.operations;
+  currentPatch = buildLearningPatch(result.operations, result.oldCount, result.newCount);
+  const added = result.operations.filter(item => item.type === "add").length;
+  const deleted = result.operations.filter(item => item.type === "delete").length;
+  const unchanged = result.operations.filter(item => item.type === "equal").length;
+  $("#diffAdded").textContent = added;
+  $("#diffDeleted").textContent = deleted;
+  $("#diffUnchanged").textContent = unchanged;
+  $("#diffSummary").textContent = added || deleted ? `${added} insertion${added === 1 ? "" : "s"}, ${deleted} deletion${deleted === 1 ? "" : "s"}` : "No changes";
+  if (!added && !deleted) {
+    output.className = "diff-output";
+    output.innerHTML = `<div class="diff-empty"><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path><circle cx="12" cy="12" r="10"></circle></svg><strong>The two versions match</strong><span>Edit either side to generate a diff.</span></div></div>`;
+    return;
+  }
+  if (diffView === "split") {
+    output.className = "diff-output is-split";
+    output.innerHTML = splitDiffRows(result.operations).map(row => `<div class="diff-split-row">${splitSideHTML(row.left, "left")}${splitSideHTML(row.right, "right")}</div>`).join("");
+  } else {
+    output.className = "diff-output";
+    output.innerHTML = `<div class="diff-hunk">@@ -1,${result.oldCount} +1,${result.newCount} @@</div>${result.operations.map(diffLineHTML).join("")}`;
+  }
+}
+
+function loadDiffSample(name) {
+  const sample = diffSamples[name];
+  if (!sample) return;
+  $("#diffBefore").value = sample.before;
+  $("#diffAfter").value = sample.after;
+  $$('.diff-sample').forEach(button => button.classList.toggle("is-active", button.dataset.sample === name));
+  renderDiff();
+}
+
+let diffDebounce;
+[$("#diffBefore"), $("#diffAfter")].forEach(editor => editor.addEventListener("input", () => {
+  clearTimeout(diffDebounce);
+  diffDebounce = setTimeout(renderDiff, 120);
+  $$('.diff-sample').forEach(button => button.classList.remove("is-active"));
+}));
+$$('.diff-sample').forEach(button => button.addEventListener("click", () => loadDiffSample(button.dataset.sample)));
+$("#swapDiff").addEventListener("click", () => {
+  const before = $("#diffBefore").value;
+  $("#diffBefore").value = $("#diffAfter").value;
+  $("#diffAfter").value = before;
+  renderDiff();
+});
+$("#clearDiff").addEventListener("click", () => {
+  $("#diffBefore").value = "";
+  $("#diffAfter").value = "";
+  $$('.diff-sample').forEach(button => button.classList.remove("is-active"));
+  renderDiff();
+});
+$("#diffWhitespace").addEventListener("change", renderDiff);
+$$('[data-diff-view]').forEach(button => button.addEventListener("click", () => {
+  diffView = button.dataset.diffView;
+  $$('[data-diff-view]').forEach(control => {
+    const active = control === button;
+    control.classList.toggle("is-active", active);
+    control.setAttribute("aria-pressed", String(active));
+  });
+  renderDiff();
+}));
+$("#diffScenario").addEventListener("change", () => $("#diffScenarioCommand").textContent = diffScenarioCommands[$("#diffScenario").value]);
+$("#copyDiffCommand").addEventListener("click", () => copyText(diffScenarioCommands[$("#diffScenario").value], "Diff command copied"));
+$("#copyPatch").addEventListener("click", () => currentPatch ? copyText(currentPatch, "Learning patch copied") : showToast("Nothing changed yet"));
+
+function diffRecipeTemplate(item, index) {
+  return `<article class="diff-recipe" style="--recipe-color:${diffRecipeColors[item.category]};animation-delay:${Math.min(index * 25, 180)}ms"><div class="diff-recipe__top"><span class="diff-recipe__number">${String(diffRecipeData.indexOf(item) + 1).padStart(2, "0")}</span><span class="diff-recipe__tag">${item.tag}</span></div><h4>${item.title}</h4><p>${item.description}</p><div class="diff-recipe__code">${escapeHTML(item.command).replace(/\n/g, "<br>")}<button class="copy-button" type="button" data-diff-copy="${encodeURIComponent(item.command)}" aria-label="Copy ${escapeHTML(item.title)}">${icons.copy}</button></div></article>`;
+}
+
+function renderDiffRecipes() {
+  const filtered = diffRecipeData.filter(item => diffRecipeFilter === "all" || item.category === diffRecipeFilter);
+  const visible = filtered.slice(0, diffRecipeLimit);
+  $("#diffRecipeGrid").innerHTML = visible.map(diffRecipeTemplate).join("");
+  $("#loadMoreDiffRecipes").hidden = visible.length >= filtered.length;
+  $$('[data-diff-copy]', $("#diffRecipeGrid")).forEach(button => button.addEventListener("click", () => copyText(decodeURIComponent(button.dataset.diffCopy), "Diff recipe copied")));
+}
+
+$$('#diffRecipeFilters .filter-chip').forEach(button => button.addEventListener("click", () => {
+  diffRecipeFilter = button.dataset.diffFilter;
+  diffRecipeLimit = diffRecipeFilter === "all" ? 9 : 20;
+  $$('#diffRecipeFilters .filter-chip').forEach(chip => {
+    const active = chip === button;
+    chip.classList.toggle("is-active", active);
+    chip.setAttribute("aria-pressed", String(active));
+  });
+  renderDiffRecipes();
+}));
+$("#loadMoreDiffRecipes").addEventListener("click", () => { diffRecipeLimit = 20; renderDiffRecipes(); });
+loadDiffSample("javascript");
+renderDiffRecipes();
 
 // Git playground
 let labIndex = 0;

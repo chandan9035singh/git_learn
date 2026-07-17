@@ -30,8 +30,9 @@
       </a>
 
       <div class="nav__links" id="navLinks">
-        <a href="#path">Learning path</a>
+        <a href="#academy">Academy</a>
         <a href="#commands">Commands</a>
+        <a href="#diff">Diff lab</a>
         <a href="#playground">Playground</a>
         <a href="#fixes">Fixes</a>
         <a href="#quiz">Quiz</a>
@@ -69,7 +70,7 @@
           </a>
         </div>
         <div class="hero__stats" aria-label="Course overview">
-          <div><strong>5</strong><span>guided stages</span></div>
+          <div><strong>8</strong><span>in-depth chapters</span></div>
           <div><strong id="heroCommandCount">30+</strong><span>essential commands</span></div>
           <div><strong id="heroFixCount">12</strong><span>real-world fixes</span></div>
         </div>
@@ -181,10 +182,51 @@
       <p class="progress-hint reveal"><span>Tip</span> Use the check in each card to save your progress on this device.</p>
     </section>
 
+    <section class="section shell" id="academy">
+      <div class="section-heading section-heading--split reveal">
+        <div>
+          <span class="section-kicker">02 / Git academy</span>
+          <h2>Understand the system, <span class="text-gradient">not just the syntax.</span></h2>
+          <p>Eight guided chapters connect every command to Git's mental model, expected output, common mistakes, and a small practice mission.</p>
+        </div>
+        <div class="academy-summary" aria-label="Academy summary">
+          <span><strong>8</strong> chapters</span>
+          <span><strong>40+</strong> concepts</span>
+          <span><strong>8</strong> missions</span>
+        </div>
+      </div>
+
+      <div class="academy-layout reveal">
+        <div class="lesson-tabs" id="lessonTabs" role="tablist" aria-label="Git course chapters">
+          <button class="lesson-tab is-active" type="button" role="tab" aria-selected="true" data-lesson="mental-model"><span>01</span><div><strong>How Git thinks</strong><small>Working tree, stage, commits</small></div><b>8 min</b></button>
+          <button class="lesson-tab" type="button" role="tab" aria-selected="false" data-lesson="setup"><span>02</span><div><strong>Setup &amp; first repo</strong><small>Install, identity, init, clone</small></div><b>10 min</b></button>
+          <button class="lesson-tab" type="button" role="tab" aria-selected="false" data-lesson="daily"><span>03</span><div><strong>The daily loop</strong><small>Edit, inspect, stage, commit</small></div><b>12 min</b></button>
+          <button class="lesson-tab" type="button" role="tab" aria-selected="false" data-lesson="ignore"><span>04</span><div><strong>.gitignore &amp; secrets</strong><small>Patterns, tracked files, safety</small></div><b>9 min</b></button>
+          <button class="lesson-tab" type="button" role="tab" aria-selected="false" data-lesson="branches"><span>05</span><div><strong>Branches &amp; merging</strong><small>HEAD, pointers, conflicts</small></div><b>14 min</b></button>
+          <button class="lesson-tab" type="button" role="tab" aria-selected="false" data-lesson="remotes"><span>06</span><div><strong>Remotes &amp; syncing</strong><small>Fetch, pull, push, upstream</small></div><b>13 min</b></button>
+          <button class="lesson-tab" type="button" role="tab" aria-selected="false" data-lesson="auth"><span>07</span><div><strong>GitHub authentication</strong><small>HTTPS, SSH, GitHub CLI</small></div><b>11 min</b></button>
+          <button class="lesson-tab" type="button" role="tab" aria-selected="false" data-lesson="collaboration"><span>08</span><div><strong>Team collaboration</strong><small>Issues, PRs, review, Actions</small></div><b>15 min</b></button>
+        </div>
+        <article class="lesson-panel" id="lessonPanel" role="tabpanel" aria-live="polite"></article>
+      </div>
+
+      <div class="glossary reveal">
+        <div class="glossary__heading"><span>Git vocabulary</span><p>Open a term whenever Git's language feels confusing.</p></div>
+        <div class="glossary__grid">
+          <details><summary><span>Commit</span><b>+</b></summary><p>An immutable project snapshot plus metadata and a link to its parent commit. Its ID is calculated from its contents.</p></details>
+          <details><summary><span>Branch</span><b>+</b></summary><p>A movable name pointing to a commit. Creating a branch is lightweight; new commits move the checked-out branch forward.</p></details>
+          <details><summary><span>HEAD</span><b>+</b></summary><p>Your current position. It normally points to the checked-out branch, which then points to a commit.</p></details>
+          <details><summary><span>Index / stage</span><b>+</b></summary><p>The proposed snapshot for your next commit. <code>git add</code> copies selected file content into it.</p></details>
+          <details><summary><span>origin</span><b>+</b></summary><p>The conventional short name for the remote you cloned or connected. It is only a label; it can have another name.</p></details>
+          <details><summary><span>upstream</span><b>+</b></summary><p>The remote branch your local branch tracks, or—in a fork workflow—the original repository remote.</p></details>
+        </div>
+      </div>
+    </section>
+
     <section class="section section--tinted" id="commands">
       <div class="shell">
         <div class="section-heading reveal">
-          <span class="section-kicker">02 / Command library</span>
+          <span class="section-kicker">03 / Command library</span>
           <h2>Your Git <span class="text-gradient">command center</span></h2>
           <p>Search by what you want to do. Every example is copyable and explained in plain language.</p>
         </div>
@@ -220,10 +262,79 @@
       </div>
     </section>
 
+    <section class="section section--diff" id="diff">
+      <div class="shell">
+        <div class="section-heading section-heading--split reveal">
+          <div>
+            <span class="section-kicker">04 / Interactive Git diff lab</span>
+            <h2>See exactly what <span class="text-gradient">changed.</span></h2>
+            <p>Edit either version and GitQuest builds a line-by-line diff instantly. Then connect the visual result to the exact Git command for your real repository.</p>
+          </div>
+          <div class="diff-heading-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3M16 3h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3M10 8l-3 4 3 4M14 8l3 4-3 4"></path></svg><div><strong>Runs only in your browser</strong><span>Your pasted code never leaves this page.</span></div></div>
+        </div>
+
+        <div class="diff-studio reveal">
+          <div class="diff-studio__bar">
+            <div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+            <div class="diff-studio__title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3M16 3h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3"></path><path d="m10 8-3 4 3 4M14 8l3 4-3 4"></path></svg><span>Diff Studio</span></div>
+            <div class="diff-privacy"><i></i> Local preview</div>
+          </div>
+
+          <div class="diff-context-bar">
+            <label for="diffScenario"><span>I want to compare</span><select id="diffScenario"><option value="working">working tree ↔ staging area</option><option value="staged">staging area ↔ last commit</option><option value="head">all current changes ↔ last commit</option><option value="branches">feature branch ↔ main</option><option value="remote">local branch ↔ GitHub branch</option><option value="unpushed">unpushed commits ↔ upstream</option></select></label>
+            <div class="matching-command"><span>Run in a real repository</span><code id="diffScenarioCommand">git diff</code><button class="copy-button" id="copyDiffCommand" type="button" aria-label="Copy matching Git diff command"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg></button></div>
+          </div>
+
+          <div class="diff-edit-toolbar">
+            <div class="diff-samples" aria-label="Load a diff example">
+              <span>Try an example:</span>
+              <button type="button" class="diff-sample is-active" data-sample="javascript">JavaScript</button>
+              <button type="button" class="diff-sample" data-sample="html">HTML</button>
+              <button type="button" class="diff-sample" data-sample="readme">README</button>
+            </div>
+            <div class="diff-editor-actions"><button type="button" id="swapDiff"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h11l-3-3M17 17H6l3 3"></path></svg> Swap</button><button type="button" id="clearDiff"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M8 7l1 13h6l1-13"></path></svg> Clear</button></div>
+          </div>
+
+          <div class="diff-editors">
+            <label class="diff-editor diff-editor--before" for="diffBefore"><span><i>−</i> Before <small>old version</small></span><textarea id="diffBefore" spellcheck="false" aria-label="Code before changes"></textarea></label>
+            <label class="diff-editor diff-editor--after" for="diffAfter"><span><i>+</i> After <small>new version</small></span><textarea id="diffAfter" spellcheck="false" aria-label="Code after changes"></textarea></label>
+          </div>
+
+          <div class="diff-result">
+            <div class="diff-result__toolbar">
+              <div class="diff-stats" aria-live="polite"><span class="diff-stat diff-stat--added"><b id="diffAdded">0</b> additions</span><span class="diff-stat diff-stat--deleted"><b id="diffDeleted">0</b> deletions</span><span class="diff-stat"><b id="diffUnchanged">0</b> unchanged</span></div>
+              <div class="diff-view-controls">
+                <label class="check-control"><input type="checkbox" id="diffWhitespace"><span></span> Ignore whitespace</label>
+                <div class="segmented" aria-label="Diff view style"><button type="button" class="is-active" data-diff-view="unified" aria-pressed="true">Unified</button><button type="button" data-diff-view="split" aria-pressed="false">Split</button></div>
+                <button class="copy-button" id="copyPatch" type="button" aria-label="Copy generated patch" title="Copy patch"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg></button>
+              </div>
+            </div>
+            <div class="diff-file-header"><span>app.js</span><small id="diffSummary">No changes</small></div>
+            <div class="diff-output" id="diffOutput" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <div class="patch-anatomy reveal">
+          <div class="patch-anatomy__intro"><span class="section-kicker">How to read a patch</span><h3>A diff is a map, not an error message.</h3><p>Git adds a small amount of structure around your code so you can locate and review every change.</p></div>
+          <div class="patch-token"><code>--- a/app.js</code><strong>Old file</strong><p>The version you are comparing from.</p></div>
+          <div class="patch-token"><code>+++ b/app.js</code><strong>New file</strong><p>The version you are comparing to.</p></div>
+          <div class="patch-token"><code>@@ -2,4 +2,5 @@</code><strong>Hunk header</strong><p>Old and new line ranges for this change block.</p></div>
+          <div class="patch-token patch-token--delete"><code>- removed line</code><strong>Deletion</strong><p>Content present only in the old version.</p></div>
+          <div class="patch-token patch-token--add"><code>+ added line</code><strong>Addition</strong><p>Content present only in the new version.</p></div>
+        </div>
+
+        <div class="diff-guide reveal">
+          <div class="diff-guide__heading"><div><span class="section-kicker">Complete command guide</span><h3>20 ways to use <code>git diff</code></h3><p>From checking one file before <code>git add</code> to reviewing remote work before a pull.</p></div><div class="filter-row" id="diffRecipeFilters" aria-label="Filter diff recipes"><button type="button" class="filter-chip is-active" data-diff-filter="all" aria-pressed="true">All</button><button type="button" class="filter-chip" data-diff-filter="worktree" aria-pressed="false">Working files</button><button type="button" class="filter-chip" data-diff-filter="history" aria-pressed="false">History</button><button type="button" class="filter-chip" data-diff-filter="branches" aria-pressed="false">Branches</button><button type="button" class="filter-chip" data-diff-filter="remote" aria-pressed="false">Remote</button><button type="button" class="filter-chip" data-diff-filter="review" aria-pressed="false">Review &amp; debug</button></div></div>
+          <div class="diff-recipe-grid" id="diffRecipeGrid"></div>
+          <div class="load-more-wrap"><button class="button button--ghost" id="loadMoreDiffRecipes" type="button">Show all diff recipes <span>↓</span></button></div>
+        </div>
+      </div>
+    </section>
+
     <section class="section shell" id="playground">
       <div class="section-heading section-heading--split reveal">
         <div>
-          <span class="section-kicker">03 / Safe playground</span>
+          <span class="section-kicker">05 / Safe playground</span>
           <h2>Build a branch. <span class="text-gradient">Watch Git think.</span></h2>
           <p>Run the highlighted command and see the working tree, stage, history, and branch graph change.</p>
         </div>
@@ -285,7 +396,7 @@
     <section class="section section--workflow" id="workflow">
       <div class="shell">
         <div class="section-heading section-heading--center reveal">
-          <span class="section-kicker">04 / GitHub workflow</span>
+          <span class="section-kicker">06 / GitHub workflow</span>
           <h2>From idea to <span class="text-gradient">pull request</span></h2>
           <p>Git manages history on your machine. GitHub helps people share that history, discuss it, and review it together.</p>
         </div>
@@ -331,7 +442,7 @@
     <section class="section shell" id="fixes">
       <div class="section-heading section-heading--split reveal">
         <div>
-          <span class="section-kicker">05 / Rescue center</span>
+          <span class="section-kicker">07 / Rescue center</span>
           <h2>Mistakes happen. <span class="text-gradient">Your work is probably safe.</span></h2>
           <p>Choose the situation that matches yours, then follow the safest recovery route.</p>
         </div>
@@ -356,7 +467,7 @@
     <section class="section section--quiz" id="quiz">
       <div class="shell quiz-shell">
         <div class="quiz-intro reveal">
-          <span class="section-kicker">06 / Knowledge check</span>
+          <span class="section-kicker">08 / Knowledge check</span>
           <h2>Ready to test your <span class="text-gradient">Git instincts?</span></h2>
           <p>Five quick scenarios. No trick questions—just the decisions you will make in real projects.</p>
           <div class="quiz-score-card">
