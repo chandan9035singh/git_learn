@@ -9,7 +9,7 @@
   --border-bright: rgba(125, 139, 255, 0.32);
   --text: #f5f7ff;
   --text-soft: #a8b0c7;
-  --text-faint: #6f7892;
+  --text-faint: #8b95ad;
   --primary: #7c8cff;
   --primary-bright: #98a4ff;
   --purple: #bb6cff;
@@ -37,7 +37,7 @@
   --border-bright: rgba(91, 104, 228, 0.32);
   --text: #171b2e;
   --text-soft: #545e78;
-  --text-faint: #626d86;
+  --text-faint: #525d75;
   --primary: #5867e8;
   --primary-bright: #4353dd;
   --purple: #7d2fc0;
@@ -292,6 +292,38 @@ code, kbd { font-family: var(--mono); }
 .site-footer { padding: 28px 0; border-top: 1px solid var(--border); }.site-footer__inner { display: flex; align-items: center; justify-content: space-between; gap: 25px; }.site-footer .brand { font-size: 16px; }.site-footer .brand__mark { transform: scale(.8); }.site-footer p, .site-footer__inner > a:last-child { color: var(--text-faint); font-size: 10px; }.site-footer__inner > a:last-child:hover { color: var(--primary-bright); }
 .toast { position: fixed; z-index: 500; left: 50%; bottom: 28px; display: flex; align-items: center; gap: 8px; padding: 10px 15px; border: 1px solid rgba(87,220,153,.26); border-radius: 10px; color: var(--green); background: color-mix(in srgb, var(--surface-solid) 94%, transparent); box-shadow: var(--shadow); font-size: 11px; transform: translate(-50%, 100px); opacity: 0; transition: .35s cubic-bezier(.2,.8,.2,1); pointer-events: none; }.toast.is-visible { transform: translate(-50%,0); opacity: 1; }.toast svg { width: 15px; }
 
+/* Contrast-safe inactive text inside the always-dark Diff Studio. */
+.diff-context-bar label > span,
+.matching-command > span,
+.diff-edit-toolbar,
+.diff-stats,
+.check-control,
+.segmented button,
+.diff-file-header small,
+.diff-empty,
+.diff-line__no,
+.diff-line__sign,
+.diff-split-side > span {
+  color: #8b96ad;
+}
+.diff-sample,
+.diff-editor-actions button,
+.diff-view-controls > .copy-button {
+  color: #929cb3;
+}
+.diff-empty svg { color: #8b96ad; }
+.diff-empty strong { color: #a2abc0; }
+.lesson-terminal__bar,
+.lesson-terminal pre .lesson-comment,
+.lab-terminal__header,
+.lab-output .lab-welcome,
+.graph-empty,
+.graph-node__label small,
+.tree-state > span,
+.tree-state small {
+  color: #8b96ad;
+}
+
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity .75s ease, transform .75s cubic-bezier(.2,.8,.2,1); }.reveal--delay { transition-delay: .15s; }.reveal.is-visible { opacity: 1; transform: translateY(0); }
 
 @keyframes drift { 0%,100% { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(40px,30px,0) scale(1.1); } }
@@ -337,6 +369,29 @@ code, kbd { font-family: var(--mono); }
   .quiz-shell { grid-template-columns: 1fr; }.quiz-intro { text-align: center; }.quiz-intro .quiz-score-card { margin-inline: auto; }.quiz-card { max-width: 650px; width: 100%; margin-inline: auto; }
   .final-cta { align-items: start; flex-direction: column; padding: 45px; }.site-footer__inner { flex-wrap: wrap; }.site-footer p { order: 3; width: 100%; text-align: center; }
   .stage-check, .copy-button, .icon-button, .menu-button { width: 44px; height: 44px; }.filter-chip { min-height: 44px; }.nav__links a, .check-control, .diff-sample, .diff-editor-actions button, .segmented button { min-height: 44px; }.nav__links a { display: flex; align-items: center; }
+  .lab-reset, .lab-command-button { min-height: 44px; }
+  .lesson-mission button,
+  #copyCheatSheet {
+    min-height: 44px;
+  }
+  .path-card > a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    bottom: 8px;
+  }
+  .lesson-terminal__bar { height: auto; min-height: 44px; }
+  .lesson-terminal__bar .copy-button,
+  .matching-command .copy-button,
+  .diff-view-controls > .copy-button,
+  .diff-recipe__code .copy-button,
+  .solution-code .copy-button {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .diff-recipe__code { min-height: 58px; padding-right: 55px; }
   .academy-summary { width: 100%; justify-content: space-around; }.academy-layout { grid-template-columns: 1fr; }.lesson-tabs { display: flex; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--border); scrollbar-width: none; }.lesson-tabs::-webkit-scrollbar { display:none; }.lesson-tab { width: 230px; flex: 0 0 auto; }.lesson-panel { min-height: 650px; }.glossary__grid { grid-template-columns: repeat(2,1fr); }
   .diff-heading-note { width: 100%; }.diff-context-bar { align-items: stretch; flex-direction: column; }.matching-command { justify-content: space-between; }.diff-editors { grid-template-columns: 1fr; }.diff-editor:first-child { border-right: 0; border-bottom: 1px solid rgba(255,255,255,.08); }.diff-editor textarea { height: 205px; }.patch-anatomy { grid-template-columns: repeat(2,1fr); }.patch-anatomy__intro { grid-column: span 2; }.diff-result__toolbar { align-items: start; flex-direction: column; }.diff-view-controls { width: 100%; justify-content: space-between; }
 }

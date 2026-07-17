@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="GitQuest is an animated, interactive guide to learning Git and GitHub commands, workflows, and common fixes.">
+  <meta name="description" content="Master Git and GitHub from zero through visual lessons, a stateful command simulator, conflict labs, recovery drills, workflows, and skill-based challenges.">
   <meta name="theme-color" content="#0b1020">
-  <title>GitQuest — Learn Git &amp; GitHub Visually</title>
+  <title>GitQuest — Master Git &amp; GitHub by Doing</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="mastery.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -30,12 +31,11 @@
       </a>
 
       <div class="nav__links" id="navLinks">
-        <a href="#academy">Academy</a>
-        <a href="#commands">Commands</a>
-        <a href="#diff">Diff lab</a>
-        <a href="#playground">Playground</a>
+        <a href="#curriculum">Learn</a>
+        <a href="#playground">Simulator</a>
+        <a href="#conflicts">Conflicts</a>
         <a href="#fixes">Fixes</a>
-        <a href="#quiz">Quiz</a>
+        <a href="#quiz">Mastery</a>
       </div>
 
       <div class="nav__actions">
@@ -50,15 +50,29 @@
     </nav>
   </header>
 
+  <nav class="topic-rail" aria-label="Git mastery topics">
+    <div class="topic-rail__inner shell">
+      <a href="#curriculum" data-topic-link="basics">Basics</a>
+      <a href="#curriculum" data-topic-link="branching">Branching</a>
+      <a href="#curriculum" data-topic-link="remote">Remote</a>
+      <a href="#curriculum" data-topic-link="diff">Diff</a>
+      <a href="#curriculum" data-topic-link="sync">Sync</a>
+      <a href="#curriculum" data-topic-link="conflicts">Conflicts</a>
+      <a href="#curriculum" data-topic-link="pull-request">Pull Request</a>
+      <a href="#curriculum" data-topic-link="undo">Undo</a>
+      <a href="#curriculum" data-topic-link="workflow">Workflow</a>
+    </div>
+  </nav>
+
   <main id="main-content">
     <section class="hero shell" id="home">
       <div class="hero__copy reveal">
         <div class="eyebrow">
           <span class="eyebrow__pulse"></span>
-          Your visual Git learning lab
+          A complete Git mastery system
         </div>
-        <h1>Learn Git.<br><span class="text-gradient">Ship with confidence.</span></h1>
-        <p class="hero__lead">Go from your first commit to confident collaboration through visual lessons, real commands, animated workflows, and safe fixes for the errors every developer meets.</p>
+        <h1>Understand Git.<br><span class="text-gradient">Recover with confidence.</span></h1>
+        <p class="hero__lead">Start with zero knowledge, build a real mental model, type commands in a safe repository simulator, resolve realistic conflicts, and finish with senior-level collaboration instincts.</p>
         <div class="hero__actions">
           <a class="button button--primary" href="#path">
             Start your journey
@@ -66,13 +80,13 @@
           </a>
           <a class="button button--ghost" href="#playground">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 9 3 3-3 3M13 15h3"></path><rect x="3" y="4" width="18" height="16" rx="2"></rect></svg>
-            Open playground
+            Open command simulator
           </a>
         </div>
         <div class="hero__stats" aria-label="Course overview">
-          <div><strong>8</strong><span>in-depth chapters</span></div>
+          <div><strong>9</strong><span>mastery topics</span></div>
           <div><strong id="heroCommandCount">30+</strong><span>essential commands</span></div>
-          <div><strong id="heroFixCount">12</strong><span>real-world fixes</span></div>
+          <div><strong id="heroFixCount">12</strong><span>recovery scenarios</span></div>
         </div>
       </div>
 
@@ -119,10 +133,52 @@
       </div>
     </section>
 
+    <section class="section curriculum-section" id="curriculum">
+      <div class="shell">
+        <div class="section-heading section-heading--split reveal">
+          <div>
+            <span class="section-kicker">01 / Zero-to-mastery curriculum</span>
+            <h2>Learn in the order Git <span class="text-gradient">actually makes sense.</span></h2>
+            <p>Nine connected topics take you from the three Git areas to production recovery. Every topic combines a mental model, commands, a safe lab, common failure modes, and a mastery check.</p>
+          </div>
+          <div class="mastery-meter" aria-label="Overall Git mastery">
+            <div class="mastery-meter__ring" id="masteryRing"><strong id="masteryPercent">0%</strong><span>mastery</span></div>
+            <div><strong id="masteryTopicCount">0 of 9 topics</strong><small>Completed on this device</small></div>
+          </div>
+        </div>
+
+        <div class="curriculum-explorer reveal">
+          <div class="curriculum-tabs" id="curriculumTabs" role="tablist" aria-label="Git mastery curriculum">
+            <button class="curriculum-tab is-active" id="curriculumTab-basics" type="button" role="tab" aria-selected="true" aria-controls="curriculumPanel" data-curriculum-topic="basics"><span>01</span><strong>Basics</strong><small>Repository mental model</small></button>
+            <button class="curriculum-tab" id="curriculumTab-branching" type="button" role="tab" aria-selected="false" aria-controls="curriculumPanel" tabindex="-1" data-curriculum-topic="branching"><span>02</span><strong>Branching</strong><small>HEAD, merge, rebase</small></button>
+            <button class="curriculum-tab" id="curriculumTab-remote" type="button" role="tab" aria-selected="false" aria-controls="curriculumPanel" tabindex="-1" data-curriculum-topic="remote"><span>03</span><strong>Remote</strong><small>GitHub connections</small></button>
+            <button class="curriculum-tab" id="curriculumTab-diff" type="button" role="tab" aria-selected="false" aria-controls="curriculumPanel" tabindex="-1" data-curriculum-topic="diff"><span>04</span><strong>Diff</strong><small>Read every change</small></button>
+            <button class="curriculum-tab" id="curriculumTab-sync" type="button" role="tab" aria-selected="false" aria-controls="curriculumPanel" tabindex="-1" data-curriculum-topic="sync"><span>05</span><strong>Sync</strong><small>Fetch, pull, push</small></button>
+            <button class="curriculum-tab" id="curriculumTab-conflicts" type="button" role="tab" aria-selected="false" aria-controls="curriculumPanel" tabindex="-1" data-curriculum-topic="conflicts"><span>06</span><strong>Conflicts</strong><small>Diagnose and resolve</small></button>
+            <button class="curriculum-tab" id="curriculumTab-pull-request" type="button" role="tab" aria-selected="false" aria-controls="curriculumPanel" tabindex="-1" data-curriculum-topic="pull-request"><span>07</span><strong>Pull Request</strong><small>Review and checks</small></button>
+            <button class="curriculum-tab" id="curriculumTab-undo" type="button" role="tab" aria-selected="false" aria-controls="curriculumPanel" tabindex="-1" data-curriculum-topic="undo"><span>08</span><strong>Undo</strong><small>Restore and recover</small></button>
+            <button class="curriculum-tab" id="curriculumTab-workflow" type="button" role="tab" aria-selected="false" aria-controls="curriculumPanel" tabindex="-1" data-curriculum-topic="workflow"><span>09</span><strong>Workflow</strong><small>Production habits</small></button>
+          </div>
+          <article class="curriculum-panel" id="curriculumPanel" role="tabpanel" aria-labelledby="curriculumTab-basics" tabindex="0"></article>
+        </div>
+
+        <div class="mastery-skills reveal" aria-labelledby="masterySkillsTitle">
+          <div class="mastery-skills__intro"><span class="section-kicker">Skill evidence</span><h3 id="masterySkillsTitle">Progress means you solved something.</h3><p>Lessons build knowledge. Simulator missions, conflict resolutions, recovery drills, and the final quiz provide evidence that you can use it.</p></div>
+          <div class="mastery-skill-grid" id="masterySkillGrid">
+            <div data-mastery-skill="model"><span>Mental model</span><strong>0%</strong><div><i></i></div></div>
+            <div data-mastery-skill="daily"><span>Daily workflow</span><strong>0%</strong><div><i></i></div></div>
+            <div data-mastery-skill="collaboration"><span>Collaboration</span><strong>0%</strong><div><i></i></div></div>
+            <div data-mastery-skill="conflict"><span>Conflict resolution</span><strong>0%</strong><div><i></i></div></div>
+            <div data-mastery-skill="recovery"><span>Recovery</span><strong>0%</strong><div><i></i></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section shell" id="path">
       <div class="section-heading section-heading--split reveal">
         <div>
-          <span class="section-kicker">01 / Learning path</span>
+          <span class="section-kicker">02 / Learning path</span>
           <h2>One clear path from <span class="text-gradient">zero to merge</span></h2>
           <p>Complete each stage in order, or jump straight to what you need today.</p>
         </div>
@@ -185,7 +241,7 @@
     <section class="section shell" id="academy">
       <div class="section-heading section-heading--split reveal">
         <div>
-          <span class="section-kicker">02 / Git academy</span>
+          <span class="section-kicker">03 / Git academy</span>
           <h2>Understand the system, <span class="text-gradient">not just the syntax.</span></h2>
           <p>Eight guided chapters connect every command to Git's mental model, expected output, common mistakes, and a small practice mission.</p>
         </div>
@@ -226,7 +282,7 @@
     <section class="section section--tinted" id="commands">
       <div class="shell">
         <div class="section-heading reveal">
-          <span class="section-kicker">03 / Command library</span>
+          <span class="section-kicker">04 / Command library</span>
           <h2>Your Git <span class="text-gradient">command center</span></h2>
           <p>Search by what you want to do. Every example is copyable and explained in plain language.</p>
         </div>
@@ -266,7 +322,7 @@
       <div class="shell">
         <div class="section-heading section-heading--split reveal">
           <div>
-            <span class="section-kicker">04 / Interactive Git diff lab</span>
+          <span class="section-kicker">05 / Interactive Git diff lab</span>
             <h2>See exactly what <span class="text-gradient">changed.</span></h2>
             <p>Edit either version and GitQuest builds a line-by-line diff instantly. Then connect the visual result to the exact Git command for your real repository.</p>
           </div>
@@ -334,9 +390,9 @@
     <section class="section shell" id="playground">
       <div class="section-heading section-heading--split reveal">
         <div>
-          <span class="section-kicker">05 / Safe playground</span>
-          <h2>Build a branch. <span class="text-gradient">Watch Git think.</span></h2>
-          <p>Run the highlighted command and see the working tree, stage, history, and branch graph change.</p>
+          <span class="section-kicker">06 / Safe playground</span>
+          <h2>Type commands. <span class="text-gradient">Watch Git think.</span></h2>
+          <p>Use the free-form simulator for realistic practice, then follow the guided branch walkthrough to reinforce the three Git areas and commit graph.</p>
         </div>
         <div class="lab-legend" aria-label="Playground graph legend">
           <span><i class="legend-main"></i> main</span>
@@ -344,6 +400,15 @@
           <span><i class="legend-head"></i> HEAD</span>
         </div>
       </div>
+
+      <div class="practice-intro reveal">
+        <div><span class="practice-intro__status"><i></i> Browser-only sandbox</span><h3>Your mistakes are the exercise.</h3><p>Start with an ordinary folder, type real Git commands, inspect every state transition, and recover without touching files on your computer.</p></div>
+        <div class="practice-intro__rules"><span>01 Predict first</span><span>02 Inspect after</span><span>03 Recover safely</span></div>
+      </div>
+
+      <div id="terminalSimulatorApp" class="typed-simulator-shell reveal" aria-label="Stateful Git command simulator"></div>
+
+      <div class="practice-divider reveal"><span>Guided walkthrough</span><p>Prefer a structured first run? Complete this nine-step branch and merge sequence.</p></div>
 
       <div class="git-lab reveal">
         <div class="git-lab__bar">
@@ -355,7 +420,7 @@
         <div class="git-lab__body">
           <div class="lab-terminal">
             <div class="lab-terminal__header"><span>Interactive terminal</span><span class="lab-step" id="labStep">Step 1 of 9</span></div>
-            <div class="lab-output" id="labOutput" aria-live="polite">
+            <div class="lab-output" id="labOutput" role="log" aria-live="polite" aria-label="Guided Git lab output" tabindex="0">
               <p class="lab-welcome"># Your project folder is ready. Initialize Git to begin.</p>
             </div>
             <div class="lab-prompt">
@@ -396,7 +461,7 @@
     <section class="section section--workflow" id="workflow">
       <div class="shell">
         <div class="section-heading section-heading--center reveal">
-          <span class="section-kicker">06 / GitHub workflow</span>
+          <span class="section-kicker">07 / GitHub workflow</span>
           <h2>From idea to <span class="text-gradient">pull request</span></h2>
           <p>Git manages history on your machine. GitHub helps people share that history, discuss it, and review it together.</p>
         </div>
@@ -426,7 +491,7 @@
           <article class="workflow-step">
             <span class="workflow-step__number">05</span>
             <div class="workflow-step__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path><circle cx="12" cy="12" r="10"></circle></svg></div>
-            <h3>Review &amp; merge</h3><p>Discuss, improve, pass checks, then merge.</p><code>git switch main &amp;&amp; git pull</code>
+            <h3>Review &amp; merge</h3><p>Discuss, improve, pass checks, then merge.</p><code>git switch main<br>git pull --ff-only</code>
           </article>
         </div>
 
@@ -439,10 +504,45 @@
       </div>
     </section>
 
+    <section class="section section--conflicts" id="conflicts">
+      <div class="shell">
+        <div class="section-heading section-heading--split reveal">
+          <div>
+            <span class="section-kicker">08 / Conflict Arena</span>
+            <h2>Conflicts are state, <span class="text-gradient">not catastrophe.</span></h2>
+            <p>Practise the conflict classes senior developers meet in real repositories. Git preserves the competing versions; your job is to understand intent, build the correct result, test it, and continue the right operation.</p>
+          </div>
+          <div class="conflict-readiness" aria-label="Conflict practice coverage"><strong>6</strong><span>scenario classes</span><small>Merge · Rebase · Stash · Rename</small></div>
+        </div>
+
+        <ol class="conflict-method reveal" aria-label="Universal conflict resolution method">
+          <li><span>01</span><strong>Status</strong><small>Name the active operation</small></li>
+          <li><span>02</span><strong>Inspect</strong><small>Compare base, ours, theirs</small></li>
+          <li><span>03</span><strong>Resolve</strong><small>Build the intended result</small></li>
+          <li><span>04</span><strong>Test</strong><small>Check behavior, not markers</small></li>
+          <li><span>05</span><strong>Stage</strong><small>Mark paths resolved</small></li>
+          <li><span>06</span><strong>Continue</strong><small>Verify history afterward</small></li>
+        </ol>
+
+        <div class="conflict-truth reveal">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18"></path><circle cx="12" cy="12" r="9"></circle></svg>
+          <div><strong>“Ours” and “theirs” are operation-dependent labels.</strong><p>During a normal merge, ours is the checked-out branch. During a rebase, the labels can feel reversed because Git is replaying your commit onto the new base. The arena explains the exact context before you choose.</p></div>
+        </div>
+
+        <div id="conflictArenaApp" class="conflict-arena-shell reveal" aria-label="Interactive Git conflict scenarios"></div>
+
+        <div class="senior-conflict-notes reveal">
+          <article><span>Senior habit 01</span><h3>Resolve intent, not markers</h3><p>Ask what the combined feature should do. Keeping both blocks mechanically can produce valid syntax and broken behavior.</p></article>
+          <article><span>Senior habit 02</span><h3>Generated files need a policy</h3><p>For lockfiles and generated output, resolve the source of truth first and regenerate when the project workflow allows it.</p></article>
+          <article><span>Senior habit 03</span><h3>Verification closes the loop</h3><p>After continuing, inspect the graph, run tests, and review the final diff before pushing or requesting review.</p></article>
+        </div>
+      </div>
+    </section>
+
     <section class="section shell" id="fixes">
       <div class="section-heading section-heading--split reveal">
         <div>
-          <span class="section-kicker">07 / Rescue center</span>
+          <span class="section-kicker">09 / Rescue center</span>
           <h2>Mistakes happen. <span class="text-gradient">Your work is probably safe.</span></h2>
           <p>Choose the situation that matches yours, then follow the safest recovery route.</p>
         </div>
@@ -452,6 +552,23 @@
         </label>
       </div>
 
+      <div class="error-doctor reveal">
+        <div class="error-doctor__copy"><span class="section-kicker">Local Error Doctor</span><h3>Paste the terminal message. Start with diagnosis.</h3><p>GitQuest matches the message locally in your browser, opens the closest recovery guide, and copies only non-destructive checks.</p></div>
+        <div class="error-doctor__form">
+          <label for="errorDoctorInput">Terminal error or situation</label>
+          <textarea id="errorDoctorInput" rows="3" spellcheck="false" placeholder="Example: ! [rejected] main -> main (non-fast-forward)"></textarea>
+          <div class="error-doctor__actions">
+            <div class="error-examples" role="group" aria-label="Example Git errors">
+              <button type="button" data-error-example="rejected">Push rejected</button>
+              <button type="button" data-error-example="conflict">Merge conflict</button>
+              <button type="button" data-error-example="lost">Lost commit</button>
+            </div>
+            <button class="button button--primary" id="diagnoseError" type="button">Diagnose safely <span>→</span></button>
+          </div>
+          <div class="error-doctor__result" id="errorDoctorResult" role="status" aria-live="polite" hidden></div>
+        </div>
+      </div>
+
       <div class="safety-banner reveal">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.5 20h19L12 3Z"></path><path d="M12 9v4M12 17h.01"></path></svg>
         <div><strong>Pause before using force, hard reset, or clean.</strong><p>A backup branch protects commits, not unstaged or untracked files. Inspect with <code>git status</code>, <code>git diff</code>, and <code>git clean -n</code>; stash with <code>git stash push -u</code> when needed.</p></div>
@@ -459,15 +576,15 @@
 
       <div class="fix-layout reveal">
         <div class="fix-list" id="fixList" role="group" aria-label="Common Git problems"></div>
-        <article class="fix-detail" id="fixDetail" aria-live="polite"></article>
+        <article class="fix-detail" id="fixDetail" aria-labelledby="fixDetailTitle"></article>
       </div>
-      <div class="empty-state" id="fixEmpty" hidden><span>✓</span><h3>No matching problem</h3><p>Try part of the exact terminal error, such as “rejected” or “untracked”.</p></div>
+      <div class="empty-state" id="fixEmpty" role="status" aria-live="polite" hidden><span>✓</span><h3>No matching problem</h3><p>Try part of the exact terminal error, such as “rejected” or “untracked”.</p></div>
     </section>
 
     <section class="section section--quiz" id="quiz">
       <div class="shell quiz-shell">
         <div class="quiz-intro reveal">
-          <span class="section-kicker">08 / Knowledge check</span>
+          <span class="section-kicker">10 / Knowledge check</span>
           <h2>Ready to test your <span class="text-gradient">Git instincts?</span></h2>
           <p>Nine quick scenarios. No trick questions—just the decisions you will make in real projects.</p>
           <div class="quiz-score-card">
@@ -489,12 +606,47 @@
       </div>
     </section>
 
+    <section class="section shell" id="capstone">
+      <div class="section-heading section-heading--split reveal">
+        <div>
+          <span class="section-kicker">11 / Senior-level capstones</span>
+          <h2>Prove the skill without <span class="text-gradient">step-by-step hints.</span></h2>
+          <p>These challenges combine several topics. Completion is based on simulator, conflict, and assessment evidence saved in this browser.</p>
+        </div>
+        <div class="capstone-total"><strong id="capstoneCount">0/3</strong><span>capstones ready</span></div>
+      </div>
+
+      <div class="capstone-grid reveal" id="capstoneGrid">
+        <article class="capstone-card" data-capstone="repository">
+          <div class="capstone-card__top"><span>Capstone 01</span><b data-label="Foundation">Foundation</b></div>
+          <h3>Build a clean repository history</h3>
+          <p>Initialize a repository, make two focused commits on a feature branch, merge it, and explain the final graph.</p>
+          <ul><li data-requirement="sim-init">Initialize deliberately</li><li data-requirement="sim-commit">Create meaningful commits</li><li data-requirement="sim-branch">Use and merge a branch</li></ul>
+          <a class="button button--ghost" href="#playground">Open simulator <span>→</span></a>
+        </article>
+        <article class="capstone-card" data-capstone="conflict">
+          <div class="capstone-card__top"><span>Capstone 02</span><b data-label="Recovery">Recovery</b></div>
+          <h3>Resolve three conflict classes</h3>
+          <p>Diagnose the operation, produce the intended result, stage it, continue safely, and verify the outcome.</p>
+          <ul><li data-requirement="conflict-content">Content conflict</li><li data-requirement="conflict-structural">Structural conflict</li><li data-requirement="conflict-operation">Rebase or stash conflict</li></ul>
+          <a class="button button--ghost" href="#conflicts">Enter Conflict Arena <span>→</span></a>
+        </article>
+        <article class="capstone-card" data-capstone="team">
+          <div class="capstone-card__top"><span>Capstone 03</span><b data-label="Team workflow">Team workflow</b></div>
+          <h3>Ship a reviewable change</h3>
+          <p>Study the collaboration lifecycle, choose a sync policy, diagnose a rejected push, and pass the mastery check before taking the workflow into a real repository.</p>
+          <ul><li data-requirement="topic-workflow">Complete Workflow topic</li><li data-requirement="topic-sync">Complete Sync topic</li><li data-requirement="lesson-collaboration">Complete Collaboration chapter</li><li data-requirement="diagnosis-push-rejected">Diagnose a rejected push</li><li data-requirement="quiz">Score at least 80%</li></ul>
+          <a class="button button--ghost" href="#quiz">Take mastery check <span>→</span></a>
+        </article>
+      </div>
+    </section>
+
     <section class="final-cta shell reveal">
       <div class="final-cta__glow" aria-hidden="true"></div>
       <div>
-        <span class="eyebrow"><span class="eyebrow__pulse"></span> Keep this page close</span>
-        <h2>The best way to learn Git is to <span class="text-gradient">make small commits.</span></h2>
-        <p>Create a practice folder, break things safely, and use the rescue center whenever you get stuck.</p>
+        <span class="eyebrow"><span class="eyebrow__pulse"></span> Practice beats memorization</span>
+        <h2>Predict the state. Run the command. <span class="text-gradient">Explain the result.</span></h2>
+        <p>Use the simulator until the three Git areas feel natural, then practise conflicts and recovery until mistakes stop feeling dangerous.</p>
       </div>
       <a class="button button--primary" href="#home">Start again <span>↑</span></a>
     </section>
@@ -511,5 +663,7 @@
   <div class="toast" id="toast" role="status" aria-live="polite"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg><span>Copied to clipboard</span></div>
 
   <script src="script.js"></script>
+  <script src="simulator.js"></script>
+  <script src="conflict-arena.js"></script>
 </body>
 </html>

@@ -229,12 +229,12 @@ const fixData = [
   { id: "unfinished-operation", icon: "…", color: "var(--orange)", title: "A merge or rebase is still in progress", subtitle: "Continue it or abort it cleanly", severity: "careful", error: "fatal: It seems that there is already a rebase-merge directory", summary: "Git is waiting for you to finish or cancel an earlier history operation before starting another.", code: "git status\n\n# After resolving and staging conflicts\ngit rebase --continue\n# Or return to the state before it began\ngit rebase --abort\n\n# For an unfinished merge instead\ngit merge --abort", why: "Git stores operation state inside .git so it can safely continue or roll back the multi-step action.", warning: "Use git status to identify the active operation. Do not manually delete Git's state files while an operation is recoverable.", keywords: "already rebase merge in progress continue abort unfinished directory" },
   { id: "wrong-branch", icon: "BR", color: "var(--primary)", title: "I committed on the wrong branch", subtitle: "Move a local commit safely", severity: "careful", error: "The commit belongs on feature/login, not main.", summary: "First confirm the worktree is clean, preserve the commit on its intended branch, then move the original local branch back.", code: "git status\n# Continue only when the working tree is clean\ngit switch -c feature/login\ngit switch main\n\n# Move local main back; --keep aborts on unsafe overlap\ngit reset --keep HEAD~1\ngit switch feature/login", why: "The new feature branch preserves a pointer to the commit before main moves. --keep is more protective of uncommitted changes than --hard.", warning: "Do this only when the mistaken commit is local and not pushed. If it was shared, keep history intact and use git revert instead.", keywords: "wrong branch commit main reset keep" },
   { id: "undo-pushed", icon: "RV", color: "var(--green)", title: "I need to undo a pushed commit", subtitle: "Reverse shared history", severity: "safe", error: "A bad commit is already on the shared remote branch.", summary: "Add a new inverse commit. This preserves the history teammates may already have.", code: "git log --oneline\n# Replace BAD_COMMIT_ID with the reviewed ID\ngit show BAD_COMMIT_ID\ngit revert BAD_COMMIT_ID\ngit push", why: "Revert does not rewrite shared history; it records the correction transparently.", keywords: "undo pushed commit shared revert remote" },
-  { id: "push-rejected", icon: "↑!", color: "var(--orange)", title: "Push rejected: non-fast-forward", subtitle: "Remote has newer commits", severity: "safe", error: "! [rejected] main -> main (non-fast-forward)", summary: "Bring the remote commits into your local branch first, then push again.", code: "git pull --rebase origin main\n# Resolve conflicts if Git pauses\ngit push origin main", why: "Rebase places your local work after the newer remote commits, producing a fast-forward push.", keywords: "push rejected non fast forward fetch first remote newer" },
+  { id: "push-rejected", icon: "↑!", color: "var(--orange)", title: "Push rejected: non-fast-forward", subtitle: "Remote has newer commits", severity: "careful", error: "! [rejected] main -> main (non-fast-forward)", summary: "Fetch first, inspect how the histories differ, then integrate with the policy your repository uses.", code: "git status\ngit fetch origin\ngit log --oneline --graph --decorate --left-right HEAD...origin/main\ngit diff HEAD...origin/main\n\n# Choose one route according to your team policy\ngit rebase origin/main\n# Or merge instead of rebase\ngit merge origin/main\n\n# After resolving, testing, and reviewing\ngit push origin main", why: "The rejection protects remote commits that are not in your local branch. Fetching separates inspection from integration; merge preserves both histories, while rebase rewrites only your local commits onto the updated remote tip.", warning: "The merge and rebase lines are alternatives, not a script to run top-to-bottom. Confirm the branch name and repository policy; do not force-push over teammates' work.", keywords: "push rejected non fast forward fetch inspect divergence rebase merge remote newer" },
   { id: "merge-conflict", icon: "<>", color: "var(--red)", title: "I have a merge conflict", subtitle: "Resolve both versions", severity: "careful", error: "CONFLICT (content): Merge conflict in src/app.js\nAutomatic merge failed; fix conflicts and then commit.", summary: "Open each conflicted file, choose the correct content, delete conflict markers, then stage the resolution.", code: "git status\n# Edit the files and remove every conflict marker\ngit add -- src/app.js\n\n# If status says a merge is active\ngit merge --continue\n\n# Or, if status says a rebase is active\ngit rebase --continue", why: "Staging a resolved file tells Git that you reviewed and settled that conflict. Continue the operation that status names.", warning: "Run tests before completing the merge. Use git merge --abort to return to the pre-merge state.", keywords: "conflict merge markers both modified rebase continue" },
   { id: "unstage", icon: "−", color: "var(--cyan)", title: "I staged the wrong file", subtitle: "Keep the edits, undo git add", severity: "safe", error: "Changes to be committed:\n  modified: secrets.env", summary: "Remove the file from the staging area without touching its contents.", code: "# After at least one commit\ngit restore --staged secrets.env\n\n# Before the very first commit, use this instead\ngit rm --cached -- secrets.env\ngit status", why: "Both routes keep the working copy and change only the next-commit selection. The first-commit case has no HEAD for restore to use.", keywords: "unstage wrong file git add keep changes staged first commit unborn" },
   { id: "discard", icon: "↶", color: "var(--orange)", title: "Discard unstaged changes in one file", subtitle: "Match the staging area", severity: "careful", error: "modified: index.html\n# These unstaged edits are not needed.", summary: "Restore one tracked working file from the index. If the file is not staged, the index normally matches HEAD.", code: "git diff -- index.html\n# After reviewing the unstaged diff:\ngit restore -- index.html", why: "By default, restore copies from the index into the working tree and leaves other files alone.", warning: "The discarded unstaged edits cannot normally be recovered afterward. Staged content, if any, becomes the working version.", keywords: "discard undo unstaged file changes restore modified index" },
   { id: "amend-message", icon: "Aa", color: "var(--purple)", title: "Fix my last commit message", subtitle: "Amend unpublished history", severity: "careful", error: "commit 8fa2...\n    udpate navabr", summary: "Replace only the latest commit message without accidentally including other staged changes.", code: "git status\n# --only ignores staged content when no paths are named\ngit commit --amend --only -m \"Update navbar\"", why: "With --only and no path arguments, amend reuses the previous snapshot and changes just its metadata.", warning: "Amend changes the commit ID. Do not amend a commit teammates already pulled.", keywords: "fix typo last commit message amend staged index only" },
-  { id: "forgot-file", icon: "+1", color: "var(--primary)", title: "I forgot a file in my last commit", subtitle: "Add it without another commit", severity: "careful", error: "The latest local commit is correct, but one file is missing.", summary: "Stage and review only the forgotten path, then isolate that path when amending.", code: "git status\ngit add -- forgotten-file.js\ngit diff --staged -- forgotten-file.js\ngit commit --amend --no-edit --only -- forgotten-file.js", why: "The path-limited amend records the forgotten file while leaving unrelated staged changes out of the replacement commit.", warning: "Other staged changes remain staged, and amend changes the commit ID. Do this only before the commit is shared.", keywords: "forgot file last commit amend add no edit staged review only" },
+  { id: "forgot-file", icon: "+1", color: "var(--primary)", title: "I forgot a file in my last commit", subtitle: "Add it without another commit", severity: "careful", error: "The latest local commit is correct, but one file is missing.", summary: "Review that path's working content, stage it, review the staged version, then isolate the same path when amending.", code: "git status\ngit diff -- forgotten-file.js\ngit add -- forgotten-file.js\ngit diff --staged -- forgotten-file.js\ngit commit --amend --no-edit --only -- forgotten-file.js", why: "The two reviews confirm the working and staged content. The path-limited amend records that file while leaving unrelated staged changes out of the replacement commit.", warning: "Other staged changes remain staged, and amend changes the commit ID. Do this only before the commit is shared.", keywords: "forgot file last commit amend add no edit staged review only" },
   { id: "detached-head", icon: "HD", color: "var(--purple)", title: "I am in detached HEAD state", subtitle: "Keep work on a real branch", severity: "safe", error: "You are in 'detached HEAD' state.", summary: "If you made useful commits here, immediately create a branch pointing to them.", code: "git switch -c rescue/my-work\n# Your commits now have a branch name", why: "Detached HEAD is safe for looking around, but a branch keeps new commits easy to find.", keywords: "detached head checkout commit rescue branch" },
   { id: "lost-commit", icon: "?", color: "var(--green)", title: "A commit looks lost after reset", subtitle: "Find it with reflog", severity: "safe", error: "The branch moved and my recent commit disappeared from git log.", summary: "Use the local reference log to find the old commit ID, then create a rescue branch.", code: "git reflog\n# Replace COMMIT_ID after inspecting the reflog entry\ngit show COMMIT_ID\ngit branch rescue-work COMMIT_ID\ngit switch rescue-work", why: "Git usually retains unreachable objects for a while; reflog records where HEAD recently pointed.", keywords: "lost commit reset recover reflog rescue disappeared" },
   { id: "untracked-overwrite", icon: "UF", color: "var(--orange)", title: "Untracked files would be overwritten", subtitle: "Protect local files before switching", severity: "careful", error: "The following untracked working tree files would be overwritten by checkout", summary: "Stash the files reversibly, or deliberately commit only the paths that belong in history.", code: "git status --short\n# Option A: temporarily stash tracked and untracked files\ngit stash push -u -m \"WIP before switch\"\n\n# Option B: intentionally commit selected paths instead\ngit add -- path/to/file\ngit diff --staged\ngit commit -m \"Save local work\"", why: "The -u flag includes untracked files, which a normal stash omits. Path-specific staging avoids sweeping secrets or unrelated files into a commit.", warning: "The two routes are alternatives. Do not use git clean until you have reviewed exactly what it would delete with git clean -n.", keywords: "untracked files overwritten checkout switch stash include" },
@@ -266,10 +266,103 @@ const fixDiagnosticCommands = {
   "unrelated-histories": "git remote -v\ngit log --oneline --decorate --graph --all -20"
 };
 
+const curriculumData = {
+  basics: {
+    number: "01", label: "Basics", meta: "Beginner · 45 min", title: "Build the mental model before the muscle memory",
+    lead: "Understand what Git stores, why the staging area exists, how HEAD and branches point into history, and how a folder becomes a repository.",
+    prerequisites: "No Git experience required",
+    outcomes: ["Explain working tree, index, repository, and HEAD", "Create a repository with an intentional default branch", "Stage selected content and verify the proposed snapshot", "Read status without guessing"],
+    commands: ["git init -b main", "git status --short", "git add -- path", "git diff --staged", "git commit -m \"message\""],
+    practice: "Initialize the simulator, edit a file, stage it, inspect the staged diff, and make the first commit.",
+    mistake: "A commit does not save every current file. It records the exact snapshot in the index.",
+    target: "#playground", targetLabel: "Start the first simulator mission", lesson: "mental-model", next: "branching"
+  },
+  branching: {
+    number: "02", label: "Branching", meta: "Core skill · 60 min", title: "Treat branches as movable pointers, not copied folders",
+    lead: "Create isolated work, understand where HEAD points, predict fast-forward and three-way merges, and know when rebase rewrites commit identities.",
+    prerequisites: "Basics and one clean commit",
+    outcomes: ["Draw HEAD, branch, and commit relationships", "Create and switch branches safely", "Predict fast-forward versus merge commits", "Choose merge or rebase based on collaboration state"],
+    commands: ["git switch -c feature/name", "git branch -vv", "git merge feature/name", "git rebase main", "git log --graph --oneline --all"],
+    practice: "Create a feature branch in the simulator, commit an edit, return to main, and merge while explaining every pointer move.",
+    mistake: "Switching branches does not create file edits. It checks out the snapshot at another commit.",
+    target: "#playground", targetLabel: "Practise the branch mission", lesson: "branches", next: "remote"
+  },
+  remote: {
+    number: "03", label: "Remote", meta: "GitHub · 45 min", title: "Separate local history from hosted collaboration",
+    lead: "Learn what origin and upstream really are, how remote-tracking names work, and why commit identity is separate from GitHub authentication.",
+    prerequisites: "Basics and branches",
+    outcomes: ["Explain local, remote-tracking, and server branches", "Connect and inspect remotes", "Choose HTTPS, SSH, or GitHub CLI authentication", "Work with forks using origin and upstream"],
+    commands: ["git remote -v", "git remote show origin", "git fetch", "git branch -vv", "gh auth status"],
+    practice: "Connect a simulated origin, publish the current branch, and inspect its upstream relationship.",
+    mistake: "origin is a conventional remote name, not GitHub itself and not a magical branch.",
+    target: "#academy", targetLabel: "Open remotes and authentication lessons", lesson: "remotes", next: "diff"
+  },
+  diff: {
+    number: "04", label: "Diff", meta: "Inspection · 55 min", title: "Read the evidence before changing repository state",
+    lead: "Compare the working tree, index, commits, branches, and upstream history. Learn patch anatomy so code review starts before git add.",
+    prerequisites: "The three Git areas",
+    outcomes: ["Choose the correct pair of states to compare", "Read hunk headers, additions, deletions, and context", "Review staged content before committing", "Inspect incoming and unpushed work after divergence"],
+    commands: ["git diff", "git diff --staged", "git diff HEAD", "git diff main...feature", "git show COMMIT_ID"],
+    practice: "Edit both sides of the Diff Studio, switch views, ignore whitespace, and explain the generated patch.",
+    mistake: "Plain git diff does not show staged changes; it compares the working tree with the index.",
+    target: "#diff", targetLabel: "Open the interactive Diff Studio", next: "sync"
+  },
+  sync: {
+    number: "05", label: "Sync", meta: "Collaboration · 60 min", title: "Fetch first, inspect divergence, then choose integration",
+    lead: "Understand ahead and behind states, rejected pushes, tracking branches, and the tradeoffs among fast-forward-only pull, merge, and rebase.",
+    prerequisites: "Remote, branching, and diff",
+    outcomes: ["Explain fetch versus pull", "Inspect incoming and unpushed commits", "Recover from a non-fast-forward rejection", "Choose a team-approved integration policy"],
+    commands: ["git fetch --prune", "git log HEAD..\"@{u}\"", "git diff \"HEAD...@{u}\"", "git pull --ff-only", "git pull --rebase"],
+    practice: "Diagnose a diverged branch from status, graph, and diff before selecting merge, rebase, or a fast-forward-only update.",
+    mistake: "git pull --rebase is a policy choice, not a universally safest command for every repository.",
+    target: "#fixes", targetLabel: "Practise a rejected-push diagnosis", lesson: "remotes", next: "conflicts"
+  },
+  conflicts: {
+    number: "06", label: "Conflicts", meta: "Recovery · 90 min", title: "Use one repeatable method across every conflict class",
+    lead: "Identify the active operation, inspect base/ours/theirs, resolve product intent, test the result, stage paths, continue correctly, and verify history.",
+    prerequisites: "Branching, diff, and sync",
+    outcomes: ["Recognize content and structural conflicts", "Explain ours and theirs in merge and rebase contexts", "Resolve without blindly choosing a side", "Continue or abort the correct Git operation"],
+    commands: ["git status", "git diff --cc", "git ls-files -u", "git add -- resolved-file", "git merge --continue"],
+    practice: "Complete same-line, add/add, modify/delete, rebase, stash-pop, and rename/delete scenarios in the Conflict Arena.",
+    mistake: "Removing marker lines is not enough. A resolution is complete only when the intended behavior is tested and verified.",
+    target: "#conflicts", targetLabel: "Enter the Conflict Arena", lesson: "branches", next: "pull-request"
+  },
+  "pull-request": {
+    number: "07", label: "Pull Request", meta: "GitHub · 55 min", title: "Turn a branch into a reviewable engineering decision",
+    lead: "Create focused branches and commits, explain why the change exists, connect issues, respond to review, pass checks, and choose an intentional merge strategy.",
+    prerequisites: "Remote, sync, and workflow basics",
+    outcomes: ["Prepare a focused pull request", "Distinguish git pull from a pull request", "Respond to requested changes without losing context", "Understand merge, squash, and rebase merge policies"],
+    commands: ["gh issue create", "gh pr create --fill", "gh pr checks", "gh pr view --web", "gh pr merge"],
+    practice: "Walk through issue, branch, commit, push, review, checks, and merge as one traceable workflow.",
+    mistake: "A pull request is a collaboration object on the hosting platform; it is not the git pull command.",
+    target: "#workflow", targetLabel: "Study the pull-request workflow", lesson: "collaboration", next: "undo"
+  },
+  undo: {
+    number: "08", label: "Undo", meta: "Recovery · 75 min", title: "Choose recovery by state and by whether history is shared",
+    lead: "Compare restore, reset, revert, amend, stash, and reflog. Protect uncommitted work and avoid rewriting commits teammates already use.",
+    prerequisites: "Basics, diff, and branching",
+    outcomes: ["Select restore, reset, or revert correctly", "Recover commits with reflog", "Move a local commit to the correct branch", "Undo shared history without rewriting it"],
+    commands: ["git restore --staged path", "git restore -- path", "git revert COMMIT_ID", "git reset --soft HEAD~1", "git reflog"],
+    practice: "Use the Rescue Center to diagnose a lost commit, wrong branch, unwanted staged file, and already-pushed mistake.",
+    mistake: "A backup branch protects commits. It does not protect unstaged or untracked files.",
+    target: "#fixes", targetLabel: "Open recovery drills", next: "workflow"
+  },
+  workflow: {
+    number: "09", label: "Workflow", meta: "Senior habits · 90 min", title: "Build history other developers can trust",
+    lead: "Combine small commits, intentional branches, pre-commit review, sync policies, pull requests, CI checks, release tags, and safe recovery into one repeatable team workflow.",
+    prerequisites: "All core topics",
+    outcomes: ["Create focused, reviewable commits", "Keep branches current without surprising history", "Use issues, pull requests, reviews, and checks", "Recover calmly and communicate rewritten history"],
+    commands: ["git add -p", "git commit", "git fetch --prune", "git push -u origin HEAD", "gh pr create --fill"],
+    practice: "Complete the simulator branch mission, a conflict scenario, and the final mastery check as one capstone path.",
+    mistake: "Command fluency is not seniority. Predictable history, careful review, recovery skill, and clear communication are.",
+    target: "#capstone", targetLabel: "Open the senior capstones", lesson: "collaboration", next: "basics"
+  }
+};
+
 const quizData = [
   { topic: "FOUNDATIONS", question: "You edited three files but want only index.html in the next commit. What should you run?", options: ["git add .", "git add index.html", "git commit index.html", "git push index.html"], answer: 1, explanation: "git add index.html stages only that file. A commit records what is staged." },
   { topic: "BRANCHES", question: "Which command creates a new branch and switches to it in one step?", options: ["git branch feature", "git checkout main", "git switch -c feature", "git merge feature"], answer: 2, explanation: "git switch -c feature creates the branch at HEAD and immediately checks it out." },
-  { topic: "COLLABORATION", question: "Your push is rejected because the remote has new commits. What is the safest next move?", options: ["Force push immediately", "Delete the remote", "Pull/rebase, resolve, then push", "Reset --hard origin/main"], answer: 2, explanation: "Integrate the remote commits first. Force pushing could erase somebody else's work." },
+  { topic: "COLLABORATION", question: "Your push is rejected because the remote has new commits. What is the safest next move?", options: ["Force push immediately", "Delete the remote", "Fetch, inspect, integrate by team policy, then push", "Reset --hard origin/main"], answer: 2, explanation: "Fetch and inspect the divergence first, then merge or rebase according to the repository policy. Force pushing could erase somebody else's work." },
   { topic: "RECOVERY", question: "A bad commit is already shared with your team. Which undo method preserves public history?", options: ["git reset --hard HEAD~1", "git revert <commit>", "Delete the .git folder", "git commit --amend"], answer: 1, explanation: "git revert adds an inverse commit, so teammates' existing history stays valid." },
   { topic: "GITHUB", question: "What does a pull request do?", options: ["Downloads Git", "Deletes a branch locally", "Proposes changes for discussion and review", "Automatically fixes every conflict"], answer: 2, explanation: "A pull request is a GitHub collaboration object for reviewing and discussing a proposed branch change." },
   { topic: "GIT DIFF", question: "You already ran git add. Which command previews exactly what the next commit will contain?", options: ["git diff", "git diff --staged", "git status --remote", "git show origin"], answer: 1, explanation: "git diff --staged compares the staging area with HEAD, so it previews the proposed commit snapshot." },
@@ -385,10 +478,18 @@ $("#menuButton").addEventListener("click", () => {
   $("#menuButton").setAttribute("aria-expanded", String(!open));
   $("#menuButton").setAttribute("aria-label", open ? "Open navigation" : "Close navigation");
   $("#navLinks").classList.toggle("is-open", !open);
+  if (!open) window.requestAnimationFrame(() => $(".nav__links a")?.focus());
 });
 
 $$('.nav__links a').forEach(link => link.addEventListener("click", () => {
+  const isMobileMenu = window.matchMedia("(max-width: 820px)").matches;
+  const section = document.querySelector(link.getAttribute("href"));
   closeMenu();
+  if (isMobileMenu && section) {
+    const destination = $("h1, h2", section) || section;
+    destination.tabIndex = -1;
+    window.requestAnimationFrame(() => destination.focus({ preventScroll: true }));
+  }
 }));
 
 document.addEventListener("keydown", event => {
@@ -410,21 +511,32 @@ window.addEventListener("load", () => {
   }, 180);
 });
 
-const sectionObserver = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const matchingLink = $(`.nav__links a[href="#${entry.target.id}"]`);
-      if (!matchingLink) return;
-      $$('.nav__links a').forEach(link => {
-        const active = link === matchingLink;
-        link.classList.toggle("is-active", active);
-        if (active) link.setAttribute("aria-current", "location");
-        else link.removeAttribute("aria-current");
-      });
-    }
+const primaryNavDestinations = $$('.nav__links a').map(link => ({
+  link,
+  section: document.querySelector(link.getAttribute("href"))
+})).filter(item => item.section);
+
+function syncActiveNavigation() {
+  const railBottom = $(".topic-rail")?.getBoundingClientRect().bottom || 90;
+  const marker = window.scrollY + railBottom + 8;
+  let current = null;
+  primaryNavDestinations.forEach(item => {
+    const sectionTop = window.scrollY + item.section.getBoundingClientRect().top;
+    if (sectionTop <= marker) current = item;
   });
-}, { rootMargin: "-40% 0px -52%", threshold: 0 });
-$$('main section[id]').forEach(section => sectionObserver.observe(section));
+  primaryNavDestinations.forEach(item => {
+    const active = item === current;
+    item.link.classList.toggle("is-active", active);
+    if (active) item.link.setAttribute("aria-current", "location");
+    else item.link.removeAttribute("aria-current");
+  });
+}
+
+window.addEventListener("scroll", syncActiveNavigation, { passive: true });
+document.addEventListener("scroll", syncActiveNavigation, { passive: true });
+window.addEventListener("resize", syncActiveNavigation);
+window.addEventListener("hashchange", syncActiveNavigation);
+syncActiveNavigation();
 
 // Reveal animations
 const revealObserver = new IntersectionObserver(entries => {
@@ -562,6 +674,7 @@ function renderLesson(id) {
     syncLessonTabs();
     renderLesson(id);
     $("#completeLesson").focus();
+    updateMasteryDashboard();
     showToast(complete ? "Chapter marked incomplete" : "Chapter completed");
   });
 }
@@ -584,6 +697,223 @@ lessonTabs.forEach((tab, index) => {
 });
 syncLessonTabs();
 renderLesson(activeLessonId);
+
+// Zero-to-mastery curriculum and evidence-based progress
+const masteryStorageKey = "gitquest-mastery-v1";
+const curriculumTopicIds = Object.keys(curriculumData);
+const recognizedSimulatorMissions = ["initialize", "edit-first-file", "stage-first-file", "first-commit", "create-branch", "edit-feature", "stage-feature", "commit-feature", "return-main", "merge-feature", "connect-remote", "publish-main"];
+const recognizedConflictScenarios = ["same-line-merge", "add-add", "modify-delete", "rebase-conflict", "stash-pop", "rename-delete"];
+let activeCurriculumTopic = "basics";
+
+function isRecognizedEvidence(item) {
+  if (item === "assessment:quiz-80") return true;
+  if (recognizedSimulatorMissions.some(id => item.startsWith(`typed-git-simulator:simulator:${id}:`))) return true;
+  if (recognizedConflictScenarios.some(id => item === `conflict-resolution:completed:${id}`)) return true;
+  return fixData.some(fix => item.startsWith(`error-doctor:diagnosis:${fix.id}:`));
+}
+
+function readMasteryState() {
+  try {
+    const parsed = JSON.parse(storageGet(masteryStorageKey, "{}"));
+    const completedTopics = Array.isArray(parsed.completedTopics)
+      ? [...new Set(parsed.completedTopics)].filter(id => curriculumTopicIds.includes(id))
+      : [];
+    const evidence = Array.isArray(parsed.evidence)
+      ? [...new Set(parsed.evidence.filter(item => typeof item === "string")
+        .filter(isRecognizedEvidence))].slice(0, 200)
+      : [];
+    return { version: 1, completedTopics, evidence };
+  } catch {
+    return { version: 1, completedTopics: [], evidence: [] };
+  }
+}
+
+let masteryState = readMasteryState();
+
+function saveMasteryState() {
+  storageSet(masteryStorageKey, JSON.stringify(masteryState));
+}
+saveMasteryState();
+
+function safeStoredList(key) {
+  return storedArray(key).filter(item => typeof item === "string");
+}
+
+function conflictCompletions() {
+  return [...new Set(safeStoredList("gitquest-conflict-arena-completed-v1"))]
+    .filter(id => recognizedConflictScenarios.includes(id));
+}
+
+function topicProgress(topicId) {
+  const topic = curriculumData[topicId];
+  let score = masteryState.completedTopics.includes(topicId) ? 35 : 0;
+  if (topic.lesson && completedLessons.includes(topic.lesson)) score += 20;
+  const evidenceText = masteryState.evidence.join(" ").toLowerCase();
+  const evidenceTerms = {
+    basics: ["init", "stage", "commit"], branching: ["branch", "switch", "merge"], remote: ["remote", "push"],
+    diff: ["diff"], sync: ["fetch", "push", "sync"], conflicts: ["conflict-resolution"],
+    "pull-request": ["pull-request", "collaboration"], undo: ["reflog", "restore", "recovery"], workflow: ["merge", "workflow", "mission"]
+  }[topicId] || [];
+  score += Math.min(30, evidenceTerms.filter(term => evidenceText.includes(term)).length * 10);
+  if (topicId === "conflicts") score += Math.min(30, conflictCompletions().length * 5);
+  if (savedQuizScore() >= Math.ceil(quizData.length * .8)) score += 15;
+  return Math.min(100, score);
+}
+
+function masteryAverage(topicIds) {
+  return Math.round(topicIds.reduce((sum, id) => sum + topicProgress(id), 0) / topicIds.length);
+}
+
+function updateCapstones() {
+  const hasEvidence = prefix => masteryState.evidence.some(item => item.startsWith(prefix));
+  const completedConflicts = conflictCompletions();
+  const storedBest = savedQuizScore();
+  const requirements = {
+    "sim-init": hasEvidence("typed-git-simulator:simulator:initialize:"),
+    "sim-commit": hasEvidence("typed-git-simulator:simulator:first-commit:"),
+    "sim-branch": hasEvidence("typed-git-simulator:simulator:create-branch:") && hasEvidence("typed-git-simulator:simulator:merge-feature:"),
+    "conflict-content": completedConflicts.some(id => ["same-line-merge", "add-add"].includes(id)),
+    "conflict-structural": completedConflicts.some(id => ["modify-delete", "rename-delete"].includes(id)),
+    "conflict-operation": completedConflicts.some(id => ["rebase-conflict", "stash-pop"].includes(id)),
+    "topic-workflow": masteryState.completedTopics.includes("workflow"),
+    "topic-sync": masteryState.completedTopics.includes("sync"),
+    "lesson-collaboration": completedLessons.includes("collaboration"),
+    "diagnosis-push-rejected": hasEvidence("error-doctor:diagnosis:push-rejected:"),
+    quiz: storedBest >= Math.ceil(quizData.length * .8)
+  };
+  Object.entries(requirements).forEach(([id, complete]) => {
+    const item = $(`[data-requirement="${id}"]`);
+    if (!item) return;
+    item.classList.toggle("is-complete", complete);
+    item.setAttribute("aria-label", `${item.textContent.trim()}: ${complete ? "complete" : "not complete"}`);
+  });
+  let ready = 0;
+  $$('.capstone-card').forEach(card => {
+    const complete = $$('[data-requirement]', card).every(item => item.classList.contains("is-complete"));
+    card.classList.toggle("is-ready", complete);
+    if (complete) ready += 1;
+    const badge = $(".capstone-card__top b", card);
+    if (badge) badge.textContent = complete ? "Ready ✓" : badge.dataset.label || badge.textContent;
+  });
+  if ($("#capstoneCount")) $("#capstoneCount").textContent = `${ready}/3`;
+}
+
+function updateMasteryDashboard() {
+  const completedTopics = masteryState.completedTopics.length;
+  const conflictScore = Math.min(18, conflictCompletions().length * 3);
+  const evidenceScore = Math.min(25, masteryState.evidence.length * 3);
+  const bestQuiz = savedQuizScore();
+  const quizScore = Math.round((bestQuiz / quizData.length) * 12);
+  const percent = Math.min(100, completedTopics * 5 + conflictScore + evidenceScore + quizScore);
+  const meter = $(".mastery-meter");
+  if (meter) {
+    meter.setAttribute("role", "progressbar");
+    meter.setAttribute("aria-valuemin", "0");
+    meter.setAttribute("aria-valuemax", "100");
+    meter.setAttribute("aria-valuenow", String(percent));
+  }
+  $("#masteryRing")?.style.setProperty("--mastery", `${percent}%`);
+  if ($("#masteryPercent")) $("#masteryPercent").textContent = `${percent}%`;
+  if ($("#masteryTopicCount")) $("#masteryTopicCount").textContent = `${completedTopics} of ${curriculumTopicIds.length} checkpoints`;
+  const scores = {
+    model: masteryAverage(["basics", "diff"]),
+    daily: masteryAverage(["basics", "branching", "diff", "workflow"]),
+    collaboration: masteryAverage(["remote", "sync", "pull-request", "workflow"]),
+    conflict: masteryAverage(["conflicts"]),
+    recovery: masteryAverage(["undo", "conflicts"])
+  };
+  Object.entries(scores).forEach(([skill, score]) => {
+    const item = $(`[data-mastery-skill="${skill}"]`);
+    if (!item) return;
+    $("strong", item).textContent = `${score}%`;
+    $("i", item).style.width = `${score}%`;
+  });
+  updateCapstones();
+}
+
+function curriculumPanelTemplate(topicId) {
+  const topic = curriculumData[topicId];
+  const reviewed = masteryState.completedTopics.includes(topicId);
+  const nextTopic = curriculumData[topic.next];
+  return `<div class="curriculum-panel__top"><div><span>${escapeHTML(topic.meta)}</span><h3>${escapeHTML(topic.title)}</h3><p>${escapeHTML(topic.lead)}</p></div><div class="topic-score"><strong>${topicProgress(topicId)}%</strong><span>skill evidence</span></div></div>
+    <div class="curriculum-panel__meta"><span><b>Prerequisite</b>${escapeHTML(topic.prerequisites)}</span><span><b>Practice loop</b>Understand → predict → run → inspect → recover</span></div>
+    <div class="curriculum-panel__grid">
+      <section><span class="curriculum-block-label">You will be able to</span><ul class="outcome-list">${topic.outcomes.map(item => `<li>${escapeHTML(item)}</li>`).join("")}</ul></section>
+      <section><span class="curriculum-block-label">Commands to understand</span><div class="topic-command-list">${topic.commands.map(command => `<code>${escapeHTML(command)}</code>`).join("")}</div></section>
+      <section class="topic-practice-card"><span class="curriculum-block-label">Deliberate practice</span><p>${escapeHTML(topic.practice)}</p><a class="button button--primary" href="${topic.target}">${escapeHTML(topic.targetLabel)} <span>→</span></a></section>
+      <aside class="topic-mistake"><strong>Common wrong assumption</strong><p>${escapeHTML(topic.mistake)}</p></aside>
+    </div>
+    <footer class="curriculum-panel__footer">
+      <div>${topic.lesson ? `<a class="text-button" href="#academy" data-open-lesson="${escapeHTML(topic.lesson)}">Open the related guided lesson <span>→</span></a>` : ""}<small>Recording a checkpoint tracks study progress. Practice evidence raises mastery.</small></div>
+      <button class="button button--ghost" id="completeCurriculumTopic" type="button" aria-pressed="${reviewed}">${reviewed ? "Checkpoint recorded ✓" : "Record topic checkpoint"}</button>
+      <button class="text-button" type="button" data-next-curriculum="${escapeHTML(topic.next)}">Next: ${escapeHTML(nextTopic.label)} <span>→</span></button>
+    </footer>`;
+}
+
+function renderCurriculumTopic(topicId, { focusPanel = false } = {}) {
+  if (!curriculumData[topicId]) return;
+  activeCurriculumTopic = topicId;
+  $$('.curriculum-tab').forEach(tab => {
+    const active = tab.dataset.curriculumTopic === topicId;
+    tab.classList.toggle("is-active", active);
+    tab.setAttribute("aria-selected", String(active));
+    tab.tabIndex = active ? 0 : -1;
+  });
+  $$('[data-topic-link]').forEach(link => {
+    const active = link.dataset.topicLink === topicId;
+    link.classList.toggle("is-active", active);
+    if (active) link.setAttribute("aria-current", "location");
+    else link.removeAttribute("aria-current");
+  });
+  const panel = $("#curriculumPanel");
+  panel.setAttribute("aria-labelledby", `curriculumTab-${topicId}`);
+  panel.innerHTML = curriculumPanelTemplate(topicId);
+  $("#completeCurriculumTopic").addEventListener("click", () => {
+    const complete = masteryState.completedTopics.includes(topicId);
+    masteryState.completedTopics = complete
+      ? masteryState.completedTopics.filter(id => id !== topicId)
+      : [...masteryState.completedTopics, topicId];
+    saveMasteryState();
+    renderCurriculumTopic(topicId, { focusPanel: true });
+    updateMasteryDashboard();
+    showToast(complete ? "Topic checkpoint removed" : `${curriculumData[topicId].label} checkpoint recorded`);
+  });
+  $("[data-next-curriculum]", panel)?.addEventListener("click", () => renderCurriculumTopic(curriculumData[topicId].next, { focusPanel: true }));
+  $("[data-open-lesson]", panel)?.addEventListener("click", event => renderLesson(event.currentTarget.dataset.openLesson));
+  if (focusPanel) window.requestAnimationFrame(() => panel.focus());
+}
+
+const curriculumTabs = $$('.curriculum-tab');
+curriculumTabs.forEach((tab, index) => {
+  tab.addEventListener("click", () => renderCurriculumTopic(tab.dataset.curriculumTopic));
+  tab.addEventListener("keydown", event => {
+    if (!["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp", "Home", "End"].includes(event.key)) return;
+    event.preventDefault();
+    let nextIndex = index;
+    if (["ArrowRight", "ArrowDown"].includes(event.key)) nextIndex = (index + 1) % curriculumTabs.length;
+    if (["ArrowLeft", "ArrowUp"].includes(event.key)) nextIndex = (index - 1 + curriculumTabs.length) % curriculumTabs.length;
+    if (event.key === "Home") nextIndex = 0;
+    if (event.key === "End") nextIndex = curriculumTabs.length - 1;
+    curriculumTabs[nextIndex].focus();
+    curriculumTabs[nextIndex].click();
+  });
+});
+
+$$('[data-topic-link]').forEach(link => link.addEventListener("click", () => renderCurriculumTopic(link.dataset.topicLink, { focusPanel: true })));
+document.addEventListener("gitquest:skill", event => {
+  const detail = event.detail && typeof event.detail === "object" ? event.detail : {};
+  const evidenceId = [detail.source, detail.id, detail.skill, detail.action, detail.scenarioId, detail.missionId, detail.command].filter(Boolean).join(":");
+  const countsAsEvidence = detail.skill !== "conflict-resolution" || detail.action === "completed";
+  if (countsAsEvidence && evidenceId && isRecognizedEvidence(evidenceId) && !masteryState.evidence.includes(evidenceId)) {
+    masteryState.evidence = [...masteryState.evidence, evidenceId].slice(-200);
+    saveMasteryState();
+  }
+  updateMasteryDashboard();
+  if (activeCurriculumTopic === "conflicts" && detail.skill === "conflict-resolution" && detail.action === "completed") renderCurriculumTopic("conflicts");
+});
+
+renderCurriculumTopic(activeCurriculumTopic);
+updateMasteryDashboard();
 
 // Command center
 let activeCommandFilter = "all";
@@ -636,7 +966,16 @@ $$('#commandFilters .filter-chip').forEach(button => button.addEventListener("cl
 }));
 
 $("#commandSearch").addEventListener("input", () => { commandLimit = 50; renderCommands(); });
-$("#loadMoreCommands").addEventListener("click", () => { commandLimit += 12; renderCommands(); });
+$("#loadMoreCommands").addEventListener("click", () => {
+  const previousCount = $$('.command-card').length;
+  commandLimit += 12;
+  renderCommands();
+  const firstNewCard = $$('.command-card')[previousCount];
+  if (firstNewCard) {
+    firstNewCard.tabIndex = -1;
+    firstNewCard.focus();
+  }
+});
 document.addEventListener("keydown", event => {
   const editable = document.activeElement.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName);
   if (event.key === "/" && !event.ctrlKey && !event.altKey && !event.metaKey && !editable) {
@@ -918,7 +1257,16 @@ $$('#diffRecipeFilters .filter-chip').forEach(button => button.addEventListener(
   });
   renderDiffRecipes();
 }));
-$("#loadMoreDiffRecipes").addEventListener("click", () => { diffRecipeLimit = 20; renderDiffRecipes(); });
+$("#loadMoreDiffRecipes").addEventListener("click", () => {
+  const previousCount = $$('.diff-recipe').length;
+  diffRecipeLimit = 20;
+  renderDiffRecipes();
+  const firstNewRecipe = $$('.diff-recipe')[previousCount];
+  if (firstNewRecipe) {
+    firstNewRecipe.tabIndex = -1;
+    firstNewRecipe.focus();
+  }
+});
 loadDiffSample("javascript");
 renderDiffRecipes();
 
@@ -970,6 +1318,14 @@ function runLabStep(index) {
   $("#labStep").textContent = labIndex >= labSteps.length ? "Lab complete ✓" : `Step ${labIndex + 1} of ${labSteps.length}`;
   $("#labSuggestion").textContent = labIndex >= labSteps.length ? "Nice work — branch merged!" : labSteps[labIndex].command;
   renderLabButtons();
+  window.requestAnimationFrame(() => {
+    if (labIndex >= labSteps.length) {
+      $("#labStep").tabIndex = -1;
+      $("#labStep").focus();
+    } else {
+      $(`.lab-command-button[data-step="${labIndex}"]`)?.focus();
+    }
+  });
   if (labIndex >= labSteps.length) showToast("Playground complete — great work!");
 }
 
@@ -998,7 +1354,7 @@ function renderFixDetail(item) {
   const diagnosticCommands = fixDiagnosticCommands[item.id];
   const copyButton = diagnosticCommands ? `<button class="copy-button" type="button" title="Copy diagnostics only" aria-label="Copy non-destructive diagnostic commands">${icons.copy}</button>` : "";
   $("#fixDetail").innerHTML = `<div class="fix-detail__meta"><span class="severity severity--${item.severity}">${item.severity === "safe" ? "Safe approach" : "Use with care"}</span><span>• ${item.subtitle}</span></div>
-    <h3>${item.title}</h3><p class="fix-detail__summary">${item.summary}</p>
+    <h3 id="fixDetailTitle">${item.title}</h3><p class="fix-detail__summary">${item.summary}</p>
     <h4>What you might see</h4><div class="error-box">${escapeHTML(item.error).replace(/\n/g, "<br>")}</div>
     <h4>Safe recovery steps</h4><div class="solution-code">${codeHtml}${copyButton}</div>
     ${diagnosticCommands ? '<p class="copy-safety-note">The copy button includes diagnostics only. Choose corrective steps after reviewing their comments and your repository state.</p>' : ""}
@@ -1011,7 +1367,7 @@ function renderFixes() {
   const query = $("#fixSearch").value.trim().toLowerCase();
   const filtered = fixData.filter(item => `${item.title} ${item.subtitle} ${item.error} ${item.keywords}`.toLowerCase().includes(query));
   if (!filtered.some(item => item.id === activeFixId)) activeFixId = filtered[0]?.id;
-  $("#fixList").innerHTML = filtered.map(item => `<button class="fix-tab ${item.id === activeFixId ? "is-active" : ""}" style="--fix-color:${item.color}" type="button" aria-pressed="${item.id === activeFixId}" data-fix="${item.id}"><span class="fix-tab__icon">${item.icon}</span><span class="fix-tab__text"><strong>${item.title}</strong><small>${item.subtitle}</small></span>${icons.chevron}</button>`).join("");
+  $("#fixList").innerHTML = filtered.map(item => `<button class="fix-tab ${item.id === activeFixId ? "is-active" : ""}" style="--fix-color:${item.color}" type="button" aria-pressed="${item.id === activeFixId}" aria-controls="fixDetail" data-fix="${item.id}"><span class="fix-tab__icon">${item.icon}</span><span class="fix-tab__text"><strong>${item.title}</strong><small>${item.subtitle}</small></span>${icons.chevron}</button>`).join("");
   $("#fixEmpty").hidden = filtered.length > 0;
   $(".fix-layout").hidden = filtered.length === 0;
   $$('.fix-tab').forEach(button => button.addEventListener("click", () => {
@@ -1025,6 +1381,81 @@ function renderFixes() {
 $("#fixSearch").addEventListener("input", renderFixes);
 $("#heroFixCount").textContent = fixData.length;
 renderFixes();
+
+const errorExamples = {
+  rejected: "! [rejected] main -> main (non-fast-forward) failed to push some refs",
+  conflict: "CONFLICT (content): Merge conflict Automatic merge failed",
+  lost: "My recent commit disappeared after reset and is missing from git log"
+};
+
+function normalizeDoctorText(value) {
+  return value.toLowerCase().replace(/[^a-z0-9@._/-]+/g, " ").trim();
+}
+
+function closestFixForError(value) {
+  const normalized = normalizeDoctorText(value);
+  const stopWords = new Set(["git", "error", "failed", "fatal", "branch", "commit", "remote", "working", "tree", "file", "files", "command"]);
+  const tokens = normalized.split(/\s+/).filter(token => token.length > 2 && !stopWords.has(token));
+  const aliases = {
+    "push-rejected": ["rejected", "non-fast-forward", "failed to push"],
+    "merge-conflict": ["conflict", "automatic merge failed", "both modified"],
+    "lost-commit": ["lost commit", "disappeared", "reflog", "after reset"],
+    "ssh-denied": ["publickey", "permission denied", "ssh"],
+    "repo-not-found": ["repository not found", "404"],
+    "not-repository": ["not a git repository", ".git"],
+    "unfinished-operation": ["already a rebase", "in progress", "rebase-merge"],
+    "refspec-main": ["src refspec", "does not match any"]
+  };
+  return fixData.map(item => {
+    const haystack = normalizeDoctorText(`${item.title} ${item.subtitle} ${item.error} ${item.summary} ${item.keywords}`);
+    let score = tokens.reduce((total, token) => total + (haystack.includes(token) ? (token.length > 7 ? 3 : 1) : 0), 0);
+    let aliasMatches = 0;
+    (aliases[item.id] || []).forEach(alias => {
+      if (normalized.includes(alias)) {
+        score += 8;
+        aliasMatches += 1;
+      }
+    });
+    const normalizedError = normalizeDoctorText(item.error);
+    const exactError = Boolean(normalizedError && normalized.includes(normalizedError));
+    if (exactError) score += 20;
+    return { item, score, confident: exactError || aliasMatches > 0 || (tokens.length >= 2 && score >= 6) };
+  }).sort((a, b) => b.score - a.score)[0];
+}
+
+function diagnoseError() {
+  const value = $("#errorDoctorInput").value.trim();
+  const result = $("#errorDoctorResult");
+  if (!value) {
+    result.hidden = false;
+    result.innerHTML = "<strong>Add the terminal message first.</strong><span>Even one distinctive line is enough to begin a local match.</span>";
+    $("#errorDoctorInput").focus();
+    return;
+  }
+  const match = closestFixForError(value);
+  if (!match || !match.confident) {
+    result.hidden = false;
+    result.innerHTML = '<strong>No confident match yet.</strong><span>Try the exact line beginning with “fatal:” or “error:”, or search the recovery library below.</span>';
+    return;
+  }
+  activeFixId = match.item.id;
+  $("#fixSearch").value = "";
+  renderFixes();
+  result.hidden = false;
+  result.innerHTML = `<strong>Likely match: ${escapeHTML(match.item.title)}</strong><span>${escapeHTML(match.item.summary)} The matching guide is selected below; begin with its diagnostic checks.</span><a href="#fixDetail">Open selected guide →</a>`;
+  document.dispatchEvent(new CustomEvent("gitquest:skill", {
+    detail: { source: "error-doctor", id: `diagnosis:${match.item.id}`, skill: "recovery-diagnosis" }
+  }));
+}
+
+$$('[data-error-example]').forEach(button => button.addEventListener("click", () => {
+  $("#errorDoctorInput").value = errorExamples[button.dataset.errorExample] || "";
+  diagnoseError();
+}));
+$("#diagnoseError").addEventListener("click", diagnoseError);
+$("#errorDoctorInput").addEventListener("keydown", event => {
+  if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) diagnoseError();
+});
 
 // Quiz
 let quizIndex = 0;
@@ -1062,6 +1493,9 @@ function answerQuiz(selected) {
     button.disabled = true;
     if (index === item.answer) button.classList.add("is-correct");
     if (index === selected && !correct) button.classList.add("is-wrong");
+    const optionText = item.options[index];
+    if (index === item.answer) button.setAttribute("aria-label", `${optionText}. Correct answer.`);
+    else if (index === selected) button.setAttribute("aria-label", `${optionText}. Your answer; incorrect.`);
   });
   const feedback = $("#quizFeedback");
   feedback.style.setProperty("--feedback-color", correct ? "var(--green)" : "var(--orange)");
@@ -1069,6 +1503,7 @@ function answerQuiz(selected) {
   feedback.hidden = false;
   $("#quizLiveScore").textContent = `Score: ${quizScore}`;
   $("#quizNext").disabled = false;
+  $("#quizNext").focus();
 }
 
 function showQuizResult() {
@@ -1076,15 +1511,26 @@ function showQuizResult() {
   const messages = quizScore === quizData.length ? ["Perfect merge!", "You made every call with confidence."] : quizScore >= Math.ceil(quizData.length * .6) ? ["Solid foundation", "You are ready to practise these workflows in a real repository."] : ["Good first commit", "Review the academy, diff guide, and rescue recipes, then try again."];
   const previousBest = savedQuizScore();
   if (quizScore > previousBest) storageSet("gitquest-best-score", String(quizScore));
+  if (quizScore >= Math.ceil(quizData.length * .8) && !masteryState.evidence.includes("assessment:quiz-80")) {
+    masteryState.evidence = [...masteryState.evidence, "assessment:quiz-80"];
+    saveMasteryState();
+  }
+  updateMasteryDashboard();
   $("#bestScore").textContent = `${Math.max(quizScore, previousBest)}/${quizData.length}`;
-  $("#quizCard").innerHTML = `<div class="quiz-result"><div class="quiz-result__ring" style="--score:${percentage}%"><strong>${quizScore}/${quizData.length}</strong></div><h3>${messages[0]}</h3><p>${messages[1]}</p><button class="button button--primary" id="quizRestart" type="button">Try the quiz again ↻</button></div>`;
+  $("#quizCard").innerHTML = `<div class="quiz-result" role="status" aria-live="polite" tabindex="-1"><div class="quiz-result__ring" style="--score:${percentage}%"><strong>${quizScore}/${quizData.length}</strong></div><h3>${messages[0]}</h3><p>${messages[1]}</p><button class="button button--primary" id="quizRestart" type="button">Try the quiz again ↻</button></div>`;
   $("#quizRestart").addEventListener("click", restartQuiz);
+  $(".quiz-result").focus();
 }
 
 $("#quizNext").addEventListener("click", () => {
   if (!answered) return;
   if (quizIndex === quizData.length - 1) showQuizResult();
-  else { quizIndex += 1; renderQuiz(); }
+  else {
+    quizIndex += 1;
+    renderQuiz();
+    $("#quizQuestion").tabIndex = -1;
+    $("#quizQuestion").focus();
+  }
 });
 
 function restartQuiz() {
@@ -1094,8 +1540,15 @@ function restartQuiz() {
   $("#quizNext").addEventListener("click", () => {
     if (!answered) return;
     if (quizIndex === quizData.length - 1) showQuizResult();
-    else { quizIndex += 1; renderQuiz(); }
+    else {
+      quizIndex += 1;
+      renderQuiz();
+      $("#quizQuestion").tabIndex = -1;
+      $("#quizQuestion").focus();
+    }
   });
   renderQuiz();
+  $("#quizQuestion").tabIndex = -1;
+  $("#quizQuestion").focus();
 }
 renderQuiz();
