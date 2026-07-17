@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GitQuest is an animated, interactive guide to learning Git and GitHub commands, workflows, and common fixes.">
+  <meta name="theme-color" content="#0b1020">
+  <title>GitQuest — Learn Git &amp; GitHub Visually</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <div class="ambient" aria-hidden="true">
+    <span class="ambient__orb ambient__orb--one"></span>
+    <span class="ambient__orb ambient__orb--two"></span>
+    <span class="ambient__orb ambient__orb--three"></span>
+    <span class="ambient__grid"></span>
+  </div>
+
+  <header class="site-header" id="top">
+    <nav class="nav shell" aria-label="Primary navigation">
+      <a class="brand" href="#home" aria-label="GitQuest home">
+        <span class="brand__mark" aria-hidden="true">
+          <span class="brand__node brand__node--one"></span>
+          <span class="brand__node brand__node--two"></span>
+          <span class="brand__node brand__node--three"></span>
+        </span>
+        <span>Git<span class="text-gradient">Quest</span></span>
+      </a>
+
+      <div class="nav__links" id="navLinks">
+        <a href="#path">Learning path</a>
+        <a href="#commands">Commands</a>
+        <a href="#playground">Playground</a>
+        <a href="#fixes">Fixes</a>
+        <a href="#quiz">Quiz</a>
+      </div>
+
+      <div class="nav__actions">
+        <button class="icon-button" id="themeToggle" type="button" aria-label="Switch to light theme" title="Toggle theme">
+          <svg class="icon icon--sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"></path></svg>
+          <svg class="icon icon--moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.1A8.5 8.5 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"></path></svg>
+        </button>
+        <button class="menu-button" id="menuButton" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Open navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="hero shell" id="home">
+      <div class="hero__copy reveal">
+        <div class="eyebrow">
+          <span class="eyebrow__pulse"></span>
+          Your visual Git learning lab
+        </div>
+        <h1>Learn Git.<br><span class="text-gradient">Ship with confidence.</span></h1>
+        <p class="hero__lead">Go from your first commit to confident collaboration through visual lessons, real commands, animated workflows, and safe fixes for the errors every developer meets.</p>
+        <div class="hero__actions">
+          <a class="button button--primary" href="#path">
+            Start your journey
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+          </a>
+          <a class="button button--ghost" href="#playground">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 9 3 3-3 3M13 15h3"></path><rect x="3" y="4" width="18" height="16" rx="2"></rect></svg>
+            Open playground
+          </a>
+        </div>
+        <div class="hero__stats" aria-label="Course overview">
+          <div><strong>5</strong><span>guided stages</span></div>
+          <div><strong id="heroCommandCount">30+</strong><span>essential commands</span></div>
+          <div><strong id="heroFixCount">12</strong><span>real-world fixes</span></div>
+        </div>
+      </div>
+
+      <div class="hero__visual reveal reveal--delay" aria-label="Animated Git branch visualization">
+        <div class="code-card code-card--back" aria-hidden="true">
+          <span class="code-card__label">feature/profile</span>
+          <span class="code-card__line"></span>
+          <span class="code-card__line code-card__line--short"></span>
+        </div>
+
+        <div class="branch-map" aria-hidden="true">
+          <div class="branch-map__badge branch-map__badge--main"><span></span>main</div>
+          <div class="branch-map__badge branch-map__badge--feature"><span></span>feature</div>
+          <svg viewBox="0 0 540 360" role="presentation">
+            <defs>
+              <linearGradient id="mainLine" x1="0" x2="1"><stop stop-color="#6d7cff"></stop><stop offset="1" stop-color="#a855f7"></stop></linearGradient>
+              <linearGradient id="featureLine" x1="0" x2="1"><stop stop-color="#2dd4bf"></stop><stop offset="1" stop-color="#6d7cff"></stop></linearGradient>
+              <filter id="nodeGlow"><feGaussianBlur stdDeviation="4" result="blur"></feGaussianBlur><feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
+            </defs>
+            <path class="branch-path branch-path--main" d="M42 258 C120 258 132 258 188 258 S298 258 354 258 S438 258 500 258"></path>
+            <path class="branch-path branch-path--feature" d="M188 258 C220 258 218 142 270 142 H348 C386 142 392 258 430 258"></path>
+            <g class="commit commit--one"><circle cx="70" cy="258" r="10"></circle><circle cx="70" cy="258" r="4"></circle></g>
+            <g class="commit commit--two"><circle cx="188" cy="258" r="11"></circle><circle cx="188" cy="258" r="4"></circle></g>
+            <g class="commit commit--three"><circle cx="270" cy="142" r="10"></circle><circle cx="270" cy="142" r="4"></circle></g>
+            <g class="commit commit--four"><circle cx="348" cy="142" r="10"></circle><circle cx="348" cy="142" r="4"></circle></g>
+            <g class="commit commit--five"><circle cx="430" cy="258" r="11"></circle><circle cx="430" cy="258" r="4"></circle></g>
+            <g class="commit commit--six"><circle cx="500" cy="258" r="10"></circle><circle cx="500" cy="258" r="4"></circle></g>
+          </svg>
+          <div class="commit-note commit-note--one"><span>c84a1f</span> Add profile UI</div>
+          <div class="commit-note commit-note--two"><span>9d2e7b</span> Merge feature</div>
+        </div>
+
+        <div class="terminal-card">
+          <div class="terminal-card__bar">
+            <div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+            <span>~/my-project</span>
+            <span class="terminal-card__status"><i></i> main</span>
+          </div>
+          <div class="terminal-card__body" aria-live="polite">
+            <p><span class="prompt">$</span> <span id="typingCommand">git status</span><span class="cursor">▋</span></p>
+            <div id="typingOutput" class="terminal-output">On branch main<br><span>nothing to commit, working tree clean</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell" id="path">
+      <div class="section-heading section-heading--split reveal">
+        <div>
+          <span class="section-kicker">01 / Learning path</span>
+          <h2>One clear path from <span class="text-gradient">zero to merge</span></h2>
+          <p>Complete each stage in order, or jump straight to what you need today.</p>
+        </div>
+        <div class="course-progress" aria-label="Learning progress">
+          <div class="course-progress__top"><span>Your progress</span><strong id="progressLabel">0%</strong></div>
+          <div class="progress-track"><span id="progressBar"></span></div>
+          <small id="progressDetail">0 of 5 stages complete</small>
+        </div>
+      </div>
+
+      <div class="path-grid" id="pathGrid">
+        <article class="path-card reveal" data-stage="basics" tabindex="0">
+          <div class="path-card__top"><span class="path-card__number">01</span><button class="stage-check" type="button" aria-label="Mark Git foundations complete"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg></button></div>
+          <div class="path-card__icon path-card__icon--blue"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2"></circle><circle cx="18" cy="18" r="2"></circle><path d="M6 8v8a2 2 0 0 0 2 2h8M6 8c0 4 6 2 6 6v2"></path></svg></div>
+          <h3>Git foundations</h3>
+          <p>Understand repositories, commits, the three Git areas, and your first snapshot.</p>
+          <div class="tag-row"><span>init</span><span>add</span><span>commit</span></div>
+          <a href="#commands" data-command-filter="basics">Explore setup commands <span>→</span></a>
+        </article>
+
+        <article class="path-card reveal" data-stage="branches" tabindex="0">
+          <div class="path-card__top"><span class="path-card__number">02</span><button class="stage-check" type="button" aria-label="Mark Branch without fear complete"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg></button></div>
+          <div class="path-card__icon path-card__icon--purple"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="5" r="2"></circle><circle cx="6" cy="19" r="2"></circle><circle cx="18" cy="8" r="2"></circle><path d="M6 7v10M8 17c5 0 8-2 8-7"></path></svg></div>
+          <h3>Branch without fear</h3>
+          <p>Create isolated work, switch contexts, merge changes, and resolve conflicts.</p>
+          <div class="tag-row"><span>switch</span><span>branch</span><span>merge</span></div>
+          <a href="#commands" data-command-filter="branches">Explore branch commands <span>→</span></a>
+        </article>
+
+        <article class="path-card reveal" data-stage="remote" tabindex="0">
+          <div class="path-card__top"><span class="path-card__number">03</span><button class="stage-check" type="button" aria-label="Mark Connect to GitHub complete"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg></button></div>
+          <div class="path-card__icon path-card__icon--cyan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 18H6a4 4 0 0 1-.3-8A6 6 0 0 1 17 8a5 5 0 0 1 1 9.9"></path><path d="m8 14 4-4 4 4M12 10v11"></path></svg></div>
+          <h3>Connect to GitHub</h3>
+          <p>Clone projects, connect remotes, fetch changes, and push your work safely.</p>
+          <div class="tag-row"><span>clone</span><span>pull</span><span>push</span></div>
+          <a href="#commands" data-command-filter="remote">Explore remote commands <span>→</span></a>
+        </article>
+
+        <article class="path-card reveal" data-stage="collab" tabindex="0">
+          <div class="path-card__top"><span class="path-card__number">04</span><button class="stage-check" type="button" aria-label="Mark Collaborate like a pro complete"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg></button></div>
+          <div class="path-card__icon path-card__icon--green"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"></circle><circle cx="17" cy="9" r="2"></circle><path d="M3 20c0-4 2.7-6 6-6s6 2 6 6M15 15c3 0 5 1.5 5 4"></path></svg></div>
+          <h3>Collaborate like a pro</h3>
+          <p>Use forks, issues, pull requests, reviews, and a clean team workflow.</p>
+          <div class="tag-row"><span>fork</span><span>PR</span><span>review</span></div>
+          <a href="#workflow">See the workflow <span>→</span></a>
+        </article>
+
+        <article class="path-card reveal" data-stage="recovery" tabindex="0">
+          <div class="path-card__top"><span class="path-card__number">05</span><button class="stage-check" type="button" aria-label="Mark Recover anything complete"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg></button></div>
+          <div class="path-card__icon path-card__icon--orange"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5M12 7v5l3 2"></path></svg></div>
+          <h3>Recover anything</h3>
+          <p>Undo the right way, rescue commits, inspect history, and fix common errors.</p>
+          <div class="tag-row"><span>restore</span><span>revert</span><span>reflog</span></div>
+          <a href="#fixes">Open the fix library <span>→</span></a>
+        </article>
+      </div>
+      <p class="progress-hint reveal"><span>Tip</span> Use the check in each card to save your progress on this device.</p>
+    </section>
+
+    <section class="section section--tinted" id="commands">
+      <div class="shell">
+        <div class="section-heading reveal">
+          <span class="section-kicker">02 / Command library</span>
+          <h2>Your Git <span class="text-gradient">command center</span></h2>
+          <p>Search by what you want to do. Every example is copyable and explained in plain language.</p>
+        </div>
+
+        <div class="command-toolbar reveal">
+          <label class="search-box" for="commandSearch">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+            <input id="commandSearch" type="search" placeholder="Search commands, e.g. undo a commit" autocomplete="off">
+            <kbd>/</kbd>
+          </label>
+          <div class="filter-row" id="commandFilters" aria-label="Filter commands">
+            <button type="button" class="filter-chip is-active" data-filter="all" aria-pressed="true">All</button>
+            <button type="button" class="filter-chip" data-filter="basics" aria-pressed="false">Basics</button>
+            <button type="button" class="filter-chip" data-filter="branches" aria-pressed="false">Branches</button>
+            <button type="button" class="filter-chip" data-filter="remote" aria-pressed="false">Remote</button>
+            <button type="button" class="filter-chip" data-filter="inspect" aria-pressed="false">Inspect</button>
+            <button type="button" class="filter-chip" data-filter="undo" aria-pressed="false">Undo</button>
+          </div>
+        </div>
+
+        <div class="command-results-line reveal">
+          <span id="commandResultCount">Showing all commands</span>
+          <button class="text-button" id="copyCheatSheet" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"></path><path d="M16 4V3a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h1"></path></svg>
+            Copy starter cheat sheet
+          </button>
+        </div>
+        <div class="command-grid" id="commandGrid" aria-live="polite"></div>
+        <div class="empty-state" id="commandEmpty" hidden>
+          <span>⌘</span><h3>No command found</h3><p>Try a broader word like “branch”, “save”, or “undo”.</p>
+        </div>
+        <div class="load-more-wrap"><button class="button button--ghost" id="loadMoreCommands" type="button">Show more commands <span>↓</span></button></div>
+      </div>
+    </section>
+
+    <section class="section shell" id="playground">
+      <div class="section-heading section-heading--split reveal">
+        <div>
+          <span class="section-kicker">03 / Safe playground</span>
+          <h2>Build a branch. <span class="text-gradient">Watch Git think.</span></h2>
+          <p>Run the highlighted command and see the working tree, stage, history, and branch graph change.</p>
+        </div>
+        <div class="lab-legend" aria-label="Playground graph legend">
+          <span><i class="legend-main"></i> main</span>
+          <span><i class="legend-feature"></i> feature/navbar</span>
+          <span><i class="legend-head"></i> HEAD</span>
+        </div>
+      </div>
+
+      <div class="git-lab reveal">
+        <div class="git-lab__bar">
+          <div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div class="git-lab__tabs"><span class="is-active">Terminal</span><span>Branch graph</span></div>
+          <button id="resetLab" class="lab-reset" type="button" title="Reset playground"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg> Reset</button>
+        </div>
+
+        <div class="git-lab__body">
+          <div class="lab-terminal">
+            <div class="lab-terminal__header"><span>Interactive terminal</span><span class="lab-step" id="labStep">Step 1 of 8</span></div>
+            <div class="lab-output" id="labOutput" aria-live="polite">
+              <p class="lab-welcome"># Your project folder is ready. Initialize Git to begin.</p>
+            </div>
+            <div class="lab-prompt">
+              <span class="prompt">$</span>
+              <span id="labSuggestion">git init</span>
+              <span class="cursor">▋</span>
+            </div>
+            <div class="lab-actions" id="labActions" aria-label="Git command choices"></div>
+          </div>
+
+          <div class="lab-visual">
+            <div class="repository-state">
+              <span class="state-pill" id="repoState"><i></i> Not initialized</span>
+              <span class="head-pill" id="headState">HEAD → —</span>
+            </div>
+            <div class="graph-canvas" id="graphCanvas" aria-label="Commit graph visualization">
+              <div class="graph-empty" id="graphEmpty">
+                <div class="graph-empty__icon"><span></span><span></span><span></span></div>
+                <strong>No commits yet</strong>
+                <small>Your history will appear here</small>
+              </div>
+              <svg id="labGraphLines" viewBox="0 0 480 270" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+              <div id="labGraphNodes"></div>
+            </div>
+            <div class="three-trees" aria-label="Git's three areas">
+              <div class="tree-state" id="workingState"><span>01</span><div><strong>Working tree</strong><small>Clean</small></div></div>
+              <svg viewBox="0 0 40 16" aria-hidden="true"><path d="M2 8h34m-5-5 5 5-5 5"></path></svg>
+              <div class="tree-state" id="stagingState"><span>02</span><div><strong>Staging area</strong><small>Empty</small></div></div>
+              <svg viewBox="0 0 40 16" aria-hidden="true"><path d="M2 8h34m-5-5 5 5-5 5"></path></svg>
+              <div class="tree-state" id="historyState"><span>03</span><div><strong>Repository</strong><small>No commits</small></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="lab-explainer reveal" id="labExplainer"><span>What just happened?</span><p>Git has not started tracking this folder yet. <code>git init</code> creates a hidden <code>.git</code> database for its history.</p></div>
+    </section>
+
+    <section class="section section--workflow" id="workflow">
+      <div class="shell">
+        <div class="section-heading section-heading--center reveal">
+          <span class="section-kicker">04 / GitHub workflow</span>
+          <h2>From idea to <span class="text-gradient">pull request</span></h2>
+          <p>Git manages history on your machine. GitHub helps people share that history, discuss it, and review it together.</p>
+        </div>
+
+        <div class="workflow-track reveal">
+          <div class="workflow-line"><span></span></div>
+          <article class="workflow-step">
+            <span class="workflow-step__number">01</span>
+            <div class="workflow-step__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4zM13 13h7v7h-7zM15 4h5v5M9 15v5H4"></path></svg></div>
+            <h3>Fork or clone</h3><p>Get a local copy of the repository.</p><code>git clone &lt;url&gt;</code>
+          </article>
+          <article class="workflow-step">
+            <span class="workflow-step__number">02</span>
+            <div class="workflow-step__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="5" r="2"></circle><circle cx="6" cy="19" r="2"></circle><circle cx="18" cy="8" r="2"></circle><path d="M6 7v10M8 17c5 0 8-2 8-7"></path></svg></div>
+            <h3>Create a branch</h3><p>Keep your change focused and isolated.</p><code>git switch -c feature/name</code>
+          </article>
+          <article class="workflow-step">
+            <span class="workflow-step__number">03</span>
+            <div class="workflow-step__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 17 6-6 4 4 6-7"></path><path d="M15 8h5v5"></path></svg></div>
+            <h3>Commit &amp; push</h3><p>Publish your clean, meaningful commits.</p><code>git push -u origin feature/name</code>
+          </article>
+          <article class="workflow-step">
+            <span class="workflow-step__number">04</span>
+            <div class="workflow-step__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"></path><path d="M13 4h7v7M20 4l-9 9"></path></svg></div>
+            <h3>Open a pull request</h3><p>Explain the why, link the issue, request review.</p><code>gh pr create</code>
+          </article>
+          <article class="workflow-step">
+            <span class="workflow-step__number">05</span>
+            <div class="workflow-step__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path><circle cx="12" cy="12" r="10"></circle></svg></div>
+            <h3>Review &amp; merge</h3><p>Discuss, improve, pass checks, then merge.</p><code>git switch main &amp;&amp; git pull</code>
+          </article>
+        </div>
+
+        <div class="github-note reveal">
+          <div class="github-note__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.3-.4 6.8-1.6 6.8-7A5.4 5.4 0 0 0 19.4 4 5 5 0 0 0 19.2.5S18.1.1 15 1.8a13.4 13.4 0 0 0-7 0C4.9.1 3.8.5 3.8.5A5 5 0 0 0 3.6 4a5.4 5.4 0 0 0-1.4 3.7c0 5.4 3.5 6.6 6.8 7A4.8 4.8 0 0 0 8 18v4"></path><path d="M8 19c-3 .9-3-1.5-4-2"></path></svg>
+          </div>
+          <div><strong>Git vs. GitHub — what is the difference?</strong><p><b>Git</b> is the version-control tool that runs locally. <b>GitHub</b> is a hosting and collaboration platform for Git repositories. You can use Git without GitHub.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell" id="fixes">
+      <div class="section-heading section-heading--split reveal">
+        <div>
+          <span class="section-kicker">05 / Rescue center</span>
+          <h2>Mistakes happen. <span class="text-gradient">Your work is probably safe.</span></h2>
+          <p>Choose the situation that matches yours, then follow the safest recovery route.</p>
+        </div>
+        <label class="search-box search-box--compact" for="fixSearch">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+          <input id="fixSearch" type="search" placeholder="Search an error message" autocomplete="off">
+        </label>
+      </div>
+
+      <div class="safety-banner reveal">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.5 20h19L12 3Z"></path><path d="M12 9v4M12 17h.01"></path></svg>
+        <div><strong>Pause before using force, hard reset, or clean.</strong><p>These can discard work. Make a backup branch with <code>git branch backup-before-fix</code> when you are unsure.</p></div>
+      </div>
+
+      <div class="fix-layout reveal">
+        <div class="fix-list" id="fixList" role="tablist" aria-label="Common Git problems"></div>
+        <article class="fix-detail" id="fixDetail" aria-live="polite"></article>
+      </div>
+      <div class="empty-state" id="fixEmpty" hidden><span>✓</span><h3>No matching problem</h3><p>Try part of the exact terminal error, such as “rejected” or “untracked”.</p></div>
+    </section>
+
+    <section class="section section--quiz" id="quiz">
+      <div class="shell quiz-shell">
+        <div class="quiz-intro reveal">
+          <span class="section-kicker">06 / Knowledge check</span>
+          <h2>Ready to test your <span class="text-gradient">Git instincts?</span></h2>
+          <p>Five quick scenarios. No trick questions—just the decisions you will make in real projects.</p>
+          <div class="quiz-score-card">
+            <span>Best score</span><strong id="bestScore">—</strong><small>Saved on this device</small>
+          </div>
+        </div>
+
+        <div class="quiz-card reveal" id="quizCard">
+          <div class="quiz-card__top"><span id="quizCounter">Question 1 of 5</span><span id="quizTopic">FOUNDATIONS</span></div>
+          <div class="quiz-progress"><span id="quizProgress"></span></div>
+          <h3 id="quizQuestion"></h3>
+          <div class="quiz-options" id="quizOptions"></div>
+          <div class="quiz-feedback" id="quizFeedback" hidden></div>
+          <div class="quiz-card__footer">
+            <span id="quizLiveScore">Score: 0</span>
+            <button class="button button--primary" id="quizNext" type="button" disabled>Next question <span>→</span></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta shell reveal">
+      <div class="final-cta__glow" aria-hidden="true"></div>
+      <div>
+        <span class="eyebrow"><span class="eyebrow__pulse"></span> Keep this page close</span>
+        <h2>The best way to learn Git is to <span class="text-gradient">make small commits.</span></h2>
+        <p>Create a practice folder, break things safely, and use the rescue center whenever you get stuck.</p>
+      </div>
+      <a class="button button--primary" href="#home">Start again <span>↑</span></a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell site-footer__inner">
+      <a class="brand" href="#home"><span class="brand__mark" aria-hidden="true"><span class="brand__node brand__node--one"></span><span class="brand__node brand__node--two"></span><span class="brand__node brand__node--three"></span></span><span>Git<span class="text-gradient">Quest</span></span></a>
+      <p>Built for curious developers. Learn, experiment, recover, repeat.</p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg><span>Copied to clipboard</span></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
